@@ -24,8 +24,7 @@ import {
   Send,
   X,
   Loader2,
-  Bot,
-  Lock
+  Bot
 } from "lucide-react";
 
 const certificates = [
@@ -199,7 +198,7 @@ export default function App() {
             transition={{ duration: 1, ease: "easeOut" }}
             className="mb-8 flex justify-center"
           >
-            <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full p-1 bg-gradient-to-tr from-indigo-500 to-violet-600 shadow-2xl shadow-indigo-500/20 group cursor-crosshair">
+            <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full p-1 bg-gradient-to-tr from-indigo-500 to-violet-600 shadow-2xl shadow-indigo-500/20 group">
               <motion.div 
                 animate={{ rotate: 360 }}
                 transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
@@ -208,13 +207,8 @@ export default function App() {
               <img 
                 src={profilePhoto} 
                 alt="Nabeel Ahmad" 
-                draggable="false"
-                onContextMenu={(e) => e.preventDefault()}
-                className="w-full h-full object-cover rounded-full border-4 border-slate-950 group-hover:scale-105 transition-transform duration-500 select-none pointer-events-none"
+                className="w-full h-full object-cover rounded-full border-4 border-slate-950 group-hover:scale-105 transition-transform duration-500"
               />
-              <div className="absolute bottom-4 right-4 p-2 bg-indigo-500 rounded-full shadow-lg shadow-indigo-500/50 border-2 border-slate-950 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <Lock className="w-4 h-4 text-white" />
-              </div>
             </div>
           </motion.div>
 
