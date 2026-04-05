@@ -24,7 +24,8 @@ import {
   Send,
   X,
   Loader2,
-  Bot
+  Bot,
+  Lock
 } from "lucide-react";
 
 const certificates = [
@@ -207,9 +208,14 @@ export default function App() {
               <img 
                 src={profilePhoto} 
                 alt="Nabeel Ahmad" 
-                className="w-full h-full object-cover rounded-full border-4 border-slate-950 group-hover:scale-105 transition-transform duration-500"
+                draggable="false"
+                onContextMenu={(e) => e.preventDefault()}
+                className="w-full h-full object-cover rounded-full border-4 border-slate-950 group-hover:scale-105 transition-transform duration-500 select-none pointer-events-none"
                 referrerPolicy="no-referrer"
               />
+              <div className="absolute bottom-4 right-4 p-2 bg-indigo-500 rounded-full shadow-lg shadow-indigo-500/50 border-2 border-slate-950 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <Lock className="w-4 h-4 text-white" />
+              </div>
             </div>
           </motion.div>
 
