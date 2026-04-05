@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { GoogleGenAI } from "@google/genai";
-import profilePhoto from "./profile.png";
 import { 
   Database, 
   FileSpreadsheet, 
@@ -192,26 +191,6 @@ export default function App() {
       {/* Hero Section */}
       <header className="relative z-10 min-h-[70vh] flex flex-col items-center justify-center px-6 pt-20 pb-10">
         <div className="text-center max-w-4xl mx-auto">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            className="mb-8 flex justify-center"
-          >
-            <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full p-1 bg-gradient-to-tr from-indigo-500 to-violet-600 shadow-2xl shadow-indigo-500/20 group">
-              <motion.div 
-                animate={{ rotate: 360 }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-0 rounded-full border-2 border-dashed border-indigo-500/30 scale-110"
-              />
-              <img 
-                src={profilePhoto} 
-                alt="Nabeel Ahmad" 
-                className="w-full h-full object-cover rounded-full border-4 border-slate-950 group-hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-          </motion.div>
-
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
