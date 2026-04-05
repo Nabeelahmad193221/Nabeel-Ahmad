@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { GoogleGenAI } from "@google/genai";
+import profilePhoto from "./profile.png";
 import { 
   Database, 
   FileSpreadsheet, 
@@ -205,7 +206,7 @@ export default function App() {
                 className="absolute inset-0 rounded-full border-2 border-dashed border-indigo-500/30 scale-110"
               />
               <img 
-                src="/profile.png" 
+                src={profilePhoto} 
                 alt="Nabeel Ahmad" 
                 draggable="false"
                 onContextMenu={(e) => e.preventDefault()}
