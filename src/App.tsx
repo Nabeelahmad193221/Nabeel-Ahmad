@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { GoogleGenAI } from "@google/genai";
-import profilePhoto from "./profile.png";
 import { 
   Database, 
   FileSpreadsheet, 
@@ -89,7 +88,6 @@ export default function App() {
   const [formState, setFormState] = useState({ name: "", email: "", subject: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [imageError, setImageError] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -206,20 +204,13 @@ export default function App() {
                 transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                 className="absolute inset-0 rounded-full border-2 border-dashed border-indigo-500/30 scale-110"
               />
-              {!imageError ? (
-                <img 
-                  src={profilePhoto} 
-                  alt="Nabeel Ahmad" 
-                  draggable="false"
-                  onContextMenu={(e) => e.preventDefault()}
-                  onError={() => setImageError(true)}
-                  className="w-full h-full object-cover rounded-full border-4 border-slate-950 group-hover:scale-105 transition-transform duration-500 select-none pointer-events-none"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-slate-900 rounded-full border-4 border-slate-950">
-                  <User className="w-24 h-24 text-indigo-400 opacity-50" />
-                </div>
-              )}
+              <img 
+                src="/profile.png" 
+                alt="Nabeel Ahmad" 
+                draggable="false"
+                onContextMenu={(e) => e.preventDefault()}
+                className="w-full h-full object-cover rounded-full border-4 border-slate-950 group-hover:scale-105 transition-transform duration-500 select-none pointer-events-none"
+              />
               <div className="absolute bottom-4 right-4 p-2 bg-indigo-500 rounded-full shadow-lg shadow-indigo-500/50 border-2 border-slate-950 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <Lock className="w-4 h-4 text-white" />
               </div>
