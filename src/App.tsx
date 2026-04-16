@@ -186,11 +186,128 @@ export default function App() {
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-40" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] opacity-20 bg-indigo-500 blur-[120px] rounded-full mix-blend-screen pointer-events-none" />
+        
+        {/* Animated Data Nodes Background */}
+        <svg className="absolute inset-0 w-full h-full opacity-20">
+          <pattern id="nodes" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+            <motion.circle
+              cx="10" cy="10" r="1.5"
+              fill="#6366f1"
+              animate={{
+                opacity: [0.2, 1, 0.2],
+                scale: [1, 1.5, 1]
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+            <motion.path
+              d="M 10 10 L 90 90"
+              stroke="#6366f1"
+              strokeWidth="0.5"
+              strokeDasharray="4 4"
+              animate={{
+                strokeDashoffset: [0, -20]
+              }}
+              transition={{
+                duration: 5,
+                repeat: Infinity,
+                ease: "linear"
+              }}
+            />
+          </pattern>
+          <rect width="100%" height="100%" fill="url(#nodes)" />
+        </svg>
       </div>
 
       {/* Hero Section */}
-      <header className="relative z-10 min-h-[70vh] flex flex-col items-center justify-center px-6 pt-20 pb-10">
-        <div className="text-center max-w-4xl mx-auto">
+      <header className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 pt-20 pb-10 overflow-hidden">
+        {/* Hero Background Image */}
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&q=80&w=2070" 
+            alt="Professional Data Analyst Workspace"
+            className="w-full h-full object-cover opacity-30 blur-[2px]"
+            referrerPolicy="no-referrer"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/60 to-slate-950" />
+        </div>
+
+        {/* Floating Data Objects */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          {[...Array(6)].map((_, i) => (
+            <motion.div
+              key={i}
+              initial={{ 
+                x: Math.random() * 100 + "%", 
+                y: Math.random() * 100 + "%",
+                opacity: 0 
+              }}
+              animate={{ 
+                y: [null, "-20%", "120%"],
+                opacity: [0, 0.3, 0],
+                rotate: [0, 360]
+              }}
+              transition={{ 
+                duration: 15 + Math.random() * 10, 
+                repeat: Infinity, 
+                delay: i * 2,
+                ease: "linear" 
+              }}
+              className="absolute"
+            >
+              {i % 2 === 0 ? (
+                <BarChart3 className="w-12 h-12 text-indigo-500/40" />
+              ) : (
+                <Database className="w-10 h-10 text-cyan-500/40" />
+              )}
+            </motion.div>
+          ))}
+        </div>
+
+        <div className="text-center max-w-4xl mx-auto relative">
+          {/* Central Data Visualization Animation */}
+          <div className="mb-12 relative inline-block">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+              className="w-48 h-48 md:w-64 md:h-64 rounded-full border border-indigo-500/20 flex items-center justify-center relative"
+            >
+              <div className="absolute inset-0 rounded-full border-t-2 border-indigo-500/40 animate-spin" style={{ animationDuration: '3s' }} />
+              <div className="absolute inset-4 rounded-full border-b-2 border-cyan-500/40 animate-spin" style={{ animationDuration: '5s', animationDirection: 'reverse' }} />
+              
+              <motion.div
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                className="w-24 h-24 md:w-32 md:h-32 bg-indigo-500/10 rounded-full flex items-center justify-center backdrop-blur-sm border border-indigo-500/30 shadow-[0_0_50px_rgba(99,102,241,0.2)]"
+              >
+                <Database className="w-10 h-10 md:w-14 md:h-14 text-indigo-400" />
+              </motion.div>
+
+              {/* Orbiting Data Points */}
+              {[...Array(4)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute w-3 h-3 bg-cyan-400 rounded-full shadow-[0_0_10px_rgba(34,211,238,0.8)]"
+                  animate={{
+                    rotate: 360
+                  }}
+                  transition={{
+                    duration: 8 + i * 2,
+                    repeat: Infinity,
+                    ease: "linear"
+                  }}
+                  style={{
+                    transformOrigin: `center ${100 + i * 20}px`,
+                    top: -20
+                  }}
+                />
+              ))}
+            </motion.div>
+          </div>
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
