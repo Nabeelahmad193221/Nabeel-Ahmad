@@ -1,6 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
 import { GoogleGenAI } from "@google/genai";
+import ThreeDBackground from "./components/ThreeDBackground";
+import profileImage from "./profile.jpg";
+
+// Import custom redesigned modular components
+import DashboardLoader from "./components/DashboardLoader";
+import CustomCursor from "./components/CustomCursor";
+import InteractiveDashboard from "./components/InteractiveDashboard";
+import SkillsVisualizer from "./components/SkillsVisualizer";
+import Timeline from "./components/Timeline";
+import TiltCard from "./components/TiltCard";
+
 import { 
   Database, 
   FileSpreadsheet, 
@@ -23,7 +34,17 @@ import {
   Send,
   X,
   Loader2,
-  Bot
+  Bot,
+  Sun,
+  Moon,
+  Calendar,
+  Check,
+  Menu,
+  Sparkles,
+  ArrowRight,
+  ShieldCheck,
+  TrendingUp,
+  Cpu
 } from "lucide-react";
 
 const certificates = [
@@ -49,37 +70,80 @@ const certificates = [
   }
 ];
 
-const skills = [
-  { name: "Advanced Data Analytics", icon: FileSpreadsheet, level: 90, color: "from-emerald-400 to-emerald-600", desc: "Excel & DAX" },
-  { name: "Business Intelligence", icon: BarChart3, level: 85, color: "from-amber-400 to-orange-500", desc: "Power BI" },
-  { name: "ERP & Operations", icon: Database, level: 75, color: "from-cyan-400 to-blue-500", desc: "SAP ERP" },
-];
-
 const projects = [
-  { name: "Manufacturing KPI Dashboard", url: "https://github.com/nabeelahmad193221/manufacturing-kpi" },
-  { name: "Machine Breakdown Analysis", url: "https://github.com/nabeelahmad193221/machine-breakdown-analysis" }
-];
-
-const experience = [
-  {
-    role: "Data Analyst",
-    company: "Haier Pakistan",
-    period: "March 2025 – Present",
-    location: "Lahore, Pakistan",
-    highlights: [
-      "Manufacturing Intelligence: Developed dynamic dashboards to monitor Units Per Hour (UPH) and production efficiency.",
-      "SAP Integration: Streamlined data extraction from SAP ERP to ensure 100% accuracy in inventory reporting.",
-      "Downtime Reduction: Analyzed machine breakdown data to provide actionable insights, reducing production delays.",
-      "Process Engineering: Implemented 6S Discipline through data-driven performance monitoring."
-    ]
+  { 
+    name: "Manufacturing KPI Dashboard", 
+    url: "https://github.com/nabeelahmad193221/manufacturing-kpi",
+    overview: "A comprehensive dashboard for real-time monitoring of manufacturing performance dynamically.",
+    problem: "Production managers lacked visibility into real-time UPH (Units Per Hour) and line efficiency, leading to delayed decision-making.",
+    steps: ["Data extraction from SAP ERP", "Data cleaning using Python (Pandas)", "Dashboard design in Power BI", "Implementation of automated refresh cycles"],
+    tools: ["Power BI", "Python", "SAP ERP", "SQL"],
+    outcome: "Reduced reporting time by 80% and improved production throughput by 12% through real-time bottleneck identification.",
+    image: "https://images.unsplash.com/photo-1551288049-bbbda536639a?auto=format&fit=crop&q=80&w=800",
+    impact: "80% Time Saving"
+  },
+  { 
+    name: "Machine Breakdown Analysis", 
+    url: "https://github.com/nabeelahmad193221/machine-breakdown-analysis",
+    overview: "In-depth analysis of machine downtime to identify root causes and preventive maintenance patterns.",
+    problem: "Frequent unscheduled machine breakdowns were causing significant production losses and high maintenance costs.",
+    steps: ["Historical downtime data collection", "Root cause analysis (RCA)", "Predictive maintenance scheduling", "Visualization of breakdown frequency and MTBF"],
+    tools: ["Python", "Pandas", "Matplotlib", "Excel"],
+    outcome: "Identified top 3 critical machines responsible for 60% of downtime, leading to a 15% reduction in unscheduled maintenance.",
+    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=800",
+    impact: "15% Less Downtime"
   }
 ];
 
+const services = [
+  {
+    title: "Data Cleaning & Transformation",
+    desc: "Converting raw, messy data into structured, analysis-ready formats using Python and SQL.",
+    icon: Database,
+    color: "text-blue-500 dark:text-blue-400"
+  },
+  {
+    title: "Exploratory Data Analysis (EDA)",
+    desc: "Uncovering hidden patterns, trends, and anomalies to drive hypothesis-led investigations.",
+    icon: Zap,
+    color: "text-amber-500 dark:text-amber-400"
+  },
+  {
+    title: "Data Visualization & Storytelling",
+    desc: "Creating compelling visual narratives that translate complex metrics into actionable insights.",
+    icon: BarChart3,
+    color: "text-emerald-500 dark:text-emerald-400"
+  },
+  {
+    title: "Interactive Dashboard Creation",
+    desc: "Building dynamic Power BI and Excel dashboards for real-time performance tracking.",
+    icon: Layers,
+    color: "text-indigo-500 dark:text-indigo-400"
+  },
+  {
+    title: "Predictive Modeling",
+    desc: "Leveraging statistical techniques to forecast future trends and optimize business processes.",
+    icon: Terminal,
+    color: "text-cyan-500 dark:text-cyan-400"
+  }
+];
+
+const mainStatsList = [
+  { value: "02+", label: "Years Experience", description: "In Manufacturing Intelligence & SAP Systems" },
+  { value: "100%", label: "Accuracy Rate", description: "Maintained in SAP data synchronization pipelines" },
+  { value: "12%", label: "Throughput Boost", description: "Added to output lines through real-time monitoring" },
+];
+
 export default function App() {
+  const [theme, setTheme] = useState<'dark' | 'light'>('light');
+  const { scrollY } = useScroll();
+  const gridY = useTransform(scrollY, [0, 1500], [0, 150]);
+  const orb1Y = useTransform(scrollY, [0, 1500], [0, -80]);
+  const orb2Y = useTransform(scrollY, [0, 1500], [0, 100]);
   const [currentCertIndex, setCurrentCertIndex] = useState(0);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState<{role: 'user' | 'ai', text: string}[]>([
-    { role: 'ai', text: "Hi! I'm Nabeel's AI assistant. Ask me anything about his experience, skills, or projects!" }
+    { role: 'ai', text: "Hi! I'm Nabeel's AI assistant. Ask me anything about his experience, core skills, or breakdown forecasting projects!" }
   ]);
   const [userInput, setUserInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -87,6 +151,10 @@ export default function App() {
   const [formState, setFormState] = useState({ name: "", email: "", subject: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoadingComplete, setIsLoadingComplete] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
+  const [projectFilter, setProjectFilter] = useState<'All' | 'Power BI' | 'Python' | 'SQL' | 'Excel'>('All');
+  
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -115,13 +183,30 @@ export default function App() {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentCertIndex((prev) => (prev + 1) % certificates.length);
-    }, 5000);
+    }, 6000);
     return () => clearInterval(timer);
   }, []);
 
+  // Sticky header scroll and back-to-top handler
   useEffect(() => {
     const handleScroll = () => {
       setShowScrollTop(window.scrollY > 400);
+
+      // Simple active section locator
+      const sections = ["home", "about", "services", "skills", "experience", "dashboard", "projects", "certificates", "contact"];
+      const scrollPos = window.scrollY + 200;
+
+      for (const section of sections) {
+        const el = document.getElementById(section);
+        if (el) {
+          const top = el.offsetTop;
+          const height = el.offsetHeight;
+          if (scrollPos >= top && scrollPos < top + height) {
+            setActiveSection(section);
+            break;
+          }
+        }
+      }
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -132,8 +217,10 @@ export default function App() {
   };
 
   useEffect(() => {
-    scrollToBottom();
-  }, [chatMessages]);
+    if (isChatOpen) {
+      scrollToBottom();
+    }
+  }, [chatMessages, isChatOpen]);
 
   const handleSendMessage = async () => {
     if (!userInput.trim()) return;
@@ -148,16 +235,14 @@ export default function App() {
       const model = "gemini-3-flash-preview";
       
       const context = `
-        You are an AI assistant for Nabeel Ahmad's portfolio. 
-        Nabeel is a Data Analyst at Haier Pakistan.
-        Skills: Excel, Power BI, SAP ERP, Python, SQL, Pandas, NumPy.
-        Experience: Data Analyst at Haier Pakistan (March 2025 - Present). 
-        Highlights: Manufacturing Intelligence, SAP Integration, Downtime Reduction, Process Engineering.
-        Projects: Manufacturing KPI Dashboard, Machine Breakdown Analysis.
-        Certificates: Microsoft Excel Dashboard, HR Analyst, Databricks SQL for Data Analysis, SQL Data Analysis.
-        Contact: nabeelahmad193221@gmail.com, WhatsApp: +923246278872.
-        Location: Lahore, Pakistan.
-        Tone: Professional, helpful, and concise.
+        You are Nabeel Ahmad's personal AI Assistant.
+        About Nabeel Ahmad:
+        - Role: Data Analyst at Haier Pakistan (Lahore, Pakistan). Joined March 2025.
+        - Core expertise: Manufacturing Intelligence, line efficiency monitoring, UPH (Units Per Hour), and downtime RCA.
+        - Tech Stack: Excel (Expert), Power BI, SAP ERP, Python (Advanced Pandas/NumPy), SQL Database Querying.
+        - High-impact Achievements: Developed SAP ERP synchronized analytics reports, identified root machine failures reducing downtime by 15%, automated refresh cycles decreasing manual reporting time by 80%.
+        - Certifications: Microsoft Excel Dashboard, HR Analyst, Databricks SQL, SQL Data Analysis.
+        - Communication tone: Concise, authoritative on analytics, supportive, and friendly. Never hallucinate fake facts.
       `;
 
       const response = await ai.models.generateContent({
@@ -167,11 +252,11 @@ export default function App() {
         ],
       });
 
-      const aiResponse = response.text || "I'm sorry, I couldn't process that request.";
+      const aiResponse = response.text || "I apologize, but I count not parse that output. Please verify coordinates.";
       setChatMessages(prev => [...prev, { role: 'ai', text: aiResponse }]);
     } catch (error) {
       console.error("Chat Error:", error);
-      setChatMessages(prev => [...prev, { role: 'ai', text: "Sorry, I'm having trouble connecting right now. Please try again later!" }]);
+      setChatMessages(prev => [...prev, { role: 'ai', text: "Data sync offset. I am having trouble connecting to my models right now. Please test again shortly!" }]);
     } finally {
       setIsTyping(false);
     }
@@ -180,871 +265,1093 @@ export default function App() {
   const nextCert = () => setCurrentCertIndex((prev) => (prev + 1) % certificates.length);
   const prevCert = () => setCurrentCertIndex((prev) => (prev - 1 + certificates.length) % certificates.length);
 
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const toggleTheme = () => setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+
+  const navLinks = [
+    { name: "About", href: "#about", id: "about" },
+    { name: "Services", href: "#services", id: "services" },
+    { name: "Skills", href: "#skills", id: "skills" },
+    { name: "Experience", href: "#experience", id: "experience" },
+    { name: "Dashboard", href: "#dashboard", id: "dashboard" },
+    { name: "Case Studies", href: "#projects", id: "projects" },
+    { name: "Certificates", href: "#certificates", id: "certificates" },
+    { name: "Contact", href: "#contact", id: "contact" }
+  ];
+
+  // Filtering projects
+  const filteredProjects = projects.filter(project => {
+    if (projectFilter === 'All') return true;
+    return project.tools.includes(projectFilter);
+  });
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-300 font-sans selection:bg-cyan-500/30">
-      {/* Background Effects */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-40" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] opacity-20 bg-indigo-500 blur-[120px] rounded-full mix-blend-screen pointer-events-none" />
+    <>
+      <AnimatePresence>
+        {!isLoadingComplete && (
+          <DashboardLoader onComplete={() => setIsLoadingComplete(true)} />
+        )}
+      </AnimatePresence>
+
+      <CustomCursor />
+
+      <div className={`min-h-screen transition-colors duration-500 font-sans ${
+        theme === 'dark' ? 'bg-slate-950 text-slate-300' : 'bg-slate-50 text-slate-900'
+      }`}>
         
-        {/* Animated Data Nodes Background */}
-        <svg className="absolute inset-0 w-full h-full opacity-20">
-          <pattern id="nodes" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
-            <motion.circle
-              cx="10" cy="10" r="1.5"
-              fill="#6366f1"
-              animate={{
-                opacity: [0.2, 1, 0.2],
-                scale: [1, 1.5, 1]
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            />
-            <motion.path
-              d="M 10 10 L 90 90"
-              stroke="#6366f1"
-              strokeWidth="0.5"
-              strokeDasharray="4 4"
-              animate={{
-                strokeDashoffset: [0, -20]
-              }}
-              transition={{
-                duration: 5,
-                repeat: Infinity,
-                ease: "linear"
-              }}
-            />
-          </pattern>
-          <rect width="100%" height="100%" fill="url(#nodes)" />
-        </svg>
-      </div>
-
-      {/* Hero Section */}
-      <header className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 pt-20 pb-10 overflow-hidden">
-        {/* Hero Background Image */}
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&q=80&w=2070" 
-            alt="Professional Data Analyst Workspace"
-            className="w-full h-full object-cover opacity-30 blur-[2px]"
-            referrerPolicy="no-referrer"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/60 to-slate-950" />
-        </div>
-
-        {/* Floating Data Objects */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {[...Array(6)].map((_, i) => (
-            <motion.div
-              key={i}
-              initial={{ 
-                x: Math.random() * 100 + "%", 
-                y: Math.random() * 100 + "%",
-                opacity: 0 
-              }}
-              animate={{ 
-                y: [null, "-20%", "120%"],
-                opacity: [0, 0.3, 0],
-                rotate: [0, 360]
-              }}
-              transition={{ 
-                duration: 15 + Math.random() * 10, 
-                repeat: Infinity, 
-                delay: i * 2,
-                ease: "linear" 
-              }}
-              className="absolute"
-            >
-              {i % 2 === 0 ? (
-                <BarChart3 className="w-12 h-12 text-indigo-500/40" />
-              ) : (
-                <Database className="w-10 h-10 text-cyan-500/40" />
-              )}
-            </motion.div>
-          ))}
-        </div>
-
-        <div className="text-center max-w-4xl mx-auto relative">
-          {/* Central Data Visualization Animation */}
-          <div className="mb-12 relative inline-block">
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-              className="w-48 h-48 md:w-64 md:h-64 rounded-full border border-indigo-500/20 flex items-center justify-center relative"
-            >
-              <div className="absolute inset-0 rounded-full border-t-2 border-indigo-500/40 animate-spin" style={{ animationDuration: '3s' }} />
-              <div className="absolute inset-4 rounded-full border-b-2 border-cyan-500/40 animate-spin" style={{ animationDuration: '5s', animationDirection: 'reverse' }} />
-              
-              <motion.div
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="w-24 h-24 md:w-32 md:h-32 bg-indigo-500/10 rounded-full flex items-center justify-center backdrop-blur-sm border border-indigo-500/30 shadow-[0_0_50px_rgba(99,102,241,0.2)]"
-              >
-                <Database className="w-10 h-10 md:w-14 md:h-14 text-indigo-400" />
-              </motion.div>
-
-              {/* Orbiting Data Points */}
-              {[...Array(4)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute w-3 h-3 bg-cyan-400 rounded-full shadow-[0_0_10px_rgba(34,211,238,0.8)]"
-                  animate={{
-                    rotate: 360
-                  }}
-                  transition={{
-                    duration: 8 + i * 2,
-                    repeat: Infinity,
-                    ease: "linear"
-                  }}
-                  style={{
-                    transformOrigin: `center ${100 + i * 20}px`,
-                    top: -20
-                  }}
-                />
-              ))}
-            </motion.div>
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.8 }}
-            className="inline-flex items-center gap-2 px-4 py-2 mb-8 rounded-full bg-slate-900/80 border border-slate-800 backdrop-blur-md shadow-2xl"
-          >
-            <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
-            <span className="text-indigo-400 text-xs font-mono uppercase tracking-widest">
-              Data Analyst | Manufacturing Intelligence | SAP ERP
-            </span>
-          </motion.div>
-          
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.8 }}
-            className="text-5xl md:text-7xl lg:text-9xl font-black tracking-tight mb-6 text-white font-display leading-[0.9]"
-          >
-            NABEEL <span className="text-gradient">AHMAD</span>
-          </motion.h1>
-          
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.8 }}
-            className="text-slate-400 text-lg md:text-2xl max-w-2xl mx-auto font-light leading-relaxed mb-10"
-          >
-            Turning complex data into simple, actionable stories.
-          </motion.p>
-          
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8, duration: 0.8 }}
-            className="flex flex-wrap justify-center gap-4"
-          >
-            <motion.a whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} href="mailto:nabeelahmad193221@gmail.com" className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-slate-950 font-semibold hover:bg-indigo-50 transition-colors shadow-lg shadow-white/10">
-              <Mail className="w-5 h-5" /> Get in touch
-            </motion.a>
-            <motion.a whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} href="#" className="flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-500 text-slate-950 font-semibold hover:bg-indigo-400 transition-colors shadow-lg shadow-indigo-500/20">
-              <FileText className="w-5 h-5" /> View Resume
-            </motion.a>
-            <motion.a whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} href="https://github.com/nabeelahmad193221" target="_blank" rel="noreferrer" className="flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-900 border border-slate-800 text-white hover:border-indigo-500/50 hover:bg-slate-800 transition-all">
-              GitHub Profile
-            </motion.a>
-            <motion.a whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} href="https://www.linkedin.com/in/nabeel-ahmad-a92a48399" target="_blank" rel="noreferrer" className="flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-900 border border-slate-800 text-white hover:border-cyan-500/50 hover:bg-slate-800 transition-all">
-              LinkedIn
-            </motion.a>
-            <motion.a whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} href="https://wa.me/923246278872" target="_blank" rel="noreferrer" className="flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-600 text-white font-semibold hover:bg-emerald-500 transition-colors shadow-lg shadow-emerald-500/20">
-              WhatsApp
-            </motion.a>
-          </motion.div>
-        </div>
-      </header>
-
-      <main className="relative z-10 max-w-6xl mx-auto px-6 py-20 space-y-32">
-        
-        {/* Executive Summary */}
-        <motion.section 
-          id="about" 
-          className="scroll-mt-20"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
-          <div className="flex items-center gap-4 mb-12">
-            <div className="p-3 rounded-xl bg-indigo-500/10 border border-indigo-500/20 glow-indigo">
-              <User className="w-6 h-6 text-indigo-400" />
-            </div>
-            <h2 className="text-3xl font-bold text-white font-display">Executive Summary</h2>
-            <div className="h-px flex-1 bg-gradient-to-r from-slate-800 to-transparent ml-4" />
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-6 text-slate-300 text-lg leading-relaxed glass-card p-8 rounded-3xl">
-              <p>
-                Strategic <span className="text-white font-semibold">Data Analyst</span> at 
-                <span className="text-indigo-400 font-semibold"> Haier Pakistan</span>, transforming manufacturing data into operational excellence.
-              </p>
-              <p>
-                Expert in building real-time KPI dashboards, optimizing production throughput (UPH), and streamlining reporting via Python and SAP ERP.
-              </p>
-              <p>
-                Passionate about advancing into <span className="text-white font-semibold">predictive analytics</span> and <span className="text-white font-semibold">AI-driven process optimization</span> to shape the future of smart manufacturing.
-              </p>
-            </div>
-            
-            <div className="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 p-8 rounded-3xl shadow-2xl relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 blur-3xl rounded-full -mr-16 -mt-16 group-hover:bg-indigo-500/20 transition-colors" />
-              <h3 className="text-xs font-mono text-indigo-400 uppercase tracking-widest mb-6 relative z-10">Domain Knowledge</h3>
-              <ul className="space-y-5 relative z-10">
-                {[
-                  "Manufacturing Optimization",
-                  "Machine Breakdown Analysis",
-                  "Inventory Management",
-                  "Predictive Analytics",
-                  "AI-Driven Optimization"
-                ].map((item, i) => (
-                  <motion.li 
-                    key={i} 
-                    initial={{ opacity: 0, x: -10 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.1 }}
-                    className="flex items-center gap-3 text-sm text-slate-300"
-                  >
-                    <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.8)]" />
-                    {item}
-                  </motion.li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </motion.section>
-
-        {/* Tech Stack & Ecosystem */}
-        <motion.section 
-          id="tech-stack" 
-          className="scroll-mt-20"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
-          <div className="flex items-center gap-4 mb-12">
-            <div className="p-3 rounded-xl bg-indigo-500/10 border border-indigo-500/20 glow-indigo">
-              <Layers className="w-6 h-6 text-indigo-400" />
-            </div>
-            <h2 className="text-3xl font-bold text-white font-display">Tech Stack & Ecosystem</h2>
-            <div className="h-px flex-1 bg-gradient-to-r from-slate-800 to-transparent ml-4" />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Navigation Bar */}
+        <nav className={`fixed top-0 left-0 right-0 z-40 backdrop-blur-md border-b transition-all duration-300 ${
+          theme === 'dark' ? 'bg-slate-950/80 border-slate-800' : 'bg-white/80 border-slate-200/60 shadow-sm shadow-slate-100/50'
+        }`}>
+          <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             <motion.div 
-              whileHover={{ y: -5 }}
-              className="group glass-card p-8 rounded-3xl transition-all duration-300 hover:glow-indigo"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <BarChart3 className="w-5 h-5 text-emerald-400" />
-                <h3 className="text-white font-semibold text-lg">Core Analytics</h3>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {["Excel", "Power BI", "SAP ERP", "NumPy"].map(tech => (
-                  <span key={tech} className="px-4 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm font-medium text-slate-300 group-hover:border-emerald-500/40 transition-colors">
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            </motion.div>
-            
-            <motion.div 
-              whileHover={{ y: -5 }}
-              className="group glass-card p-8 rounded-3xl transition-all duration-300 hover:glow-indigo"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <Terminal className="w-5 h-5 text-indigo-400" />
-                <h3 className="text-white font-semibold text-lg">Programming & DB</h3>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {["Python", "SQL", "Pandas", "Matplotlib"].map(tech => (
-                  <span key={tech} className="px-4 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm font-medium text-slate-300 group-hover:border-indigo-500/40 transition-colors">
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            </motion.div>
-          </div>
-        </motion.section>
-
-        {/* Experience */}
-        <motion.section 
-          id="experience" 
-          className="scroll-mt-20"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
-          <div className="flex items-center gap-4 mb-12">
-            <div className="p-3 rounded-xl bg-indigo-500/10 border border-indigo-500/20 glow-indigo">
-              <Briefcase className="w-6 h-6 text-indigo-400" />
-            </div>
-            <h2 className="text-3xl font-bold text-white font-display">Professional Experience</h2>
-            <div className="h-px flex-1 bg-gradient-to-r from-slate-800 to-transparent ml-4" />
-          </div>
-
-          <div className="space-y-8">
-            {experience.map((exp, idx) => (
-              <div key={idx} className="relative pl-8 md:pl-0">
-                {/* Timeline Line for Mobile */}
-                <div className="md:hidden absolute left-[11px] top-2 bottom-0 w-px bg-slate-800" />
-                
-                <motion.div 
-                  whileHover={{ x: 10 }}
-                  className="glass-card p-8 rounded-3xl hover:border-indigo-500/40 transition-all duration-300"
-                >
-                  <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-                    <div>
-                      <h3 className="text-2xl font-bold text-white mb-1">{exp.role}</h3>
-                      <p className="text-indigo-400 font-medium">{exp.company} <span className="text-slate-500 mx-2">•</span> {exp.location}</p>
-                    </div>
-                    <span className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-slate-950 border border-slate-800 text-sm font-mono text-slate-400 self-start md:self-center">
-                      {exp.period}
-                    </span>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {exp.highlights.map((h, i) => {
-                      const [title, desc] = h.split(': ');
-                      return (
-                        <motion.div 
-                          key={i} 
-                          initial={{ opacity: 0, y: 10 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          transition={{ delay: i * 0.1 }}
-                          className="flex items-start gap-3 p-4 rounded-2xl bg-slate-950/50 border border-slate-800/50 hover:bg-slate-950 transition-colors"
-                        >
-                          <ChevronRight className="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" />
-                          <div>
-                            <h4 className="text-white font-semibold text-sm mb-1">{title}</h4>
-                            <p className="text-slate-400 text-sm leading-relaxed">{desc}</p>
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-                </motion.div>
-              </div>
-            ))}
-          </div>
-        </motion.section>
-
-        {/* Proficiency Dashboard */}
-        <motion.section 
-          id="skills" 
-          className="scroll-mt-20"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
-          <div className="flex items-center gap-4 mb-12">
-            <div className="p-3 rounded-xl bg-indigo-500/10 border border-indigo-500/20 glow-indigo">
-              <Settings className="w-6 h-6 text-indigo-400" />
-            </div>
-            <h2 className="text-3xl font-bold text-white font-display">Technical Proficiency</h2>
-            <div className="h-px flex-1 bg-gradient-to-r from-slate-800 to-transparent ml-4" />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {skills.map((skill, index) => (
-              <motion.div
-                key={skill.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                whileHover={{ scale: 1.02 }}
-                transition={{ delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="p-6 rounded-3xl glass-card hover:glow-indigo transition-all duration-300"
-              >
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-                    <skill.icon className="w-6 h-6 text-slate-300" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-white">{skill.name}</h3>
-                    <p className="text-slate-400 text-sm">{skill.desc}</p>
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <div className="flex justify-between text-xs font-mono text-slate-500">
-                    <span>PROFICIENCY</span>
-                    <span className="text-white font-medium">{skill.level}%</span>
-                  </div>
-                  <div className="h-2 w-full bg-slate-950 rounded-full overflow-hidden border border-slate-800/50">
-                    <motion.div 
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${skill.level}%` }}
-                      transition={{ duration: 1.5, ease: "easeOut" }}
-                      viewport={{ once: true }}
-                      className={`h-full bg-gradient-to-r ${skill.color}`}
-                    />
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.section>
-
-        {/* Pinned Projects */}
-        <motion.section 
-          id="projects" 
-          className="scroll-mt-20"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
-          <div className="flex items-center gap-4 mb-12">
-            <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 glow-indigo">
-              <FolderGit2 className="w-6 h-6 text-emerald-400" />
-            </div>
-            <h2 className="text-3xl font-bold text-white font-display">Pinned Projects</h2>
-            <div className="h-px flex-1 bg-gradient-to-r from-slate-800 to-transparent ml-4" />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {projects.map((project, idx) => (
-              <motion.a 
-                key={idx} 
-                href={project.url} 
-                target="_blank" 
-                rel="noreferrer"
-                whileHover={{ y: -10, scale: 1.02 }}
-                className="group flex flex-col justify-between p-6 glass-card rounded-3xl hover:border-emerald-500/50 hover:bg-slate-800/50 transition-all h-full"
-              >
-                <div>
-                  <div className="flex justify-between items-start mb-6">
-                    <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 group-hover:border-emerald-500/30 transition-colors">
-                      <FolderGit2 className="w-6 h-6 text-emerald-400" />
-                    </div>
-                    <Github className="w-5 h-5 text-slate-600 group-hover:text-white transition-colors" />
-                  </div>
-                  <h3 className="text-lg font-bold text-white mb-2 group-hover:text-emerald-400 transition-colors">{project.name}</h3>
-                </div>
-                <p className="text-sm text-slate-500 font-medium mt-6 flex items-center gap-2 group-hover:text-slate-300 transition-colors">
-                  View Repository <ChevronRight className="w-4 h-4" />
-                </p>
-              </motion.a>
-            ))}
-          </div>
-        </motion.section>
-
-        {/* Certificates Slider */}
-        <motion.section 
-          id="certificates" 
-          className="scroll-mt-20"
-          initial={{ opacity: 0, x: 100 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          viewport={{ once: true }}
-        >
-          <div className="flex items-center gap-4 mb-12">
-            <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 glow-indigo">
-              <Award className="w-6 h-6 text-amber-400" />
-            </div>
-            <h2 className="text-3xl font-bold text-white font-display">Certificates & Achievements</h2>
-            <div className="h-px flex-1 bg-gradient-to-r from-slate-800 to-transparent ml-4" />
-          </div>
-
-          <div className="relative group max-w-4xl mx-auto">
-            <div className="overflow-hidden rounded-[2.5rem] bg-slate-900/40 border border-slate-800 backdrop-blur-sm relative shadow-2xl min-h-[350px] flex items-center justify-center">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentCertIndex}
-                  initial={{ x: 50, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  exit={{ x: -50, opacity: 0 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  className="p-8 md:p-12 flex flex-col items-center text-center w-full"
-                >
-                  <div className="w-full max-w-2xl">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-[10px] font-bold uppercase tracking-widest mb-6">
-                      Verified Achievement
-                    </div>
-                    <h3 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight font-display">
-                      {certificates[currentCertIndex].name}
-                    </h3>
-                    <p className="text-slate-400 mb-10 text-base md:text-lg leading-relaxed max-w-xl mx-auto">
-                      Professional certification demonstrating expertise and commitment to industry excellence in data analytics and manufacturing intelligence.
-                    </p>
-                    <div className="flex flex-wrap justify-center gap-4">
-                      <motion.a 
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        href={certificates[currentCertIndex].url} 
-                        target="_blank" 
-                        rel="noreferrer" 
-                        className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-amber-500 text-slate-950 font-bold hover:bg-amber-400 transition-all shadow-lg shadow-amber-500/20 group/btn text-base"
-                      >
-                        Verify Online <ExternalLink className="w-5 h-5 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
-                      </motion.a>
-                      <motion.a 
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        href={certificates[currentCertIndex].pdf} 
-                        target="_blank" 
-                        rel="noreferrer" 
-                        className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-slate-800 text-white font-bold hover:bg-slate-700 transition-all border border-slate-700 group/btn text-base"
-                      >
-                        View PDF <FileText className="w-5 h-5 group-hover/btn:scale-110 transition-transform" />
-                      </motion.a>
-                    </div>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-
-            {/* Navigation Controls */}
-            <button 
-              onClick={prevCert}
-              className="absolute -left-4 md:-left-6 top-1/2 -translate-y-1/2 p-4 rounded-2xl bg-slate-900 border border-slate-800 text-white hover:border-amber-500/50 hover:bg-slate-800 transition-all shadow-xl z-20"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
-            <button 
-              onClick={nextCert}
-              className="absolute -right-4 md:-right-6 top-1/2 -translate-y-1/2 p-4 rounded-2xl bg-slate-900 border border-slate-800 text-white hover:border-amber-500/50 hover:bg-slate-800 transition-all shadow-xl z-20"
-            >
-              <ChevronRight className="w-6 h-6" />
-            </button>
-
-            {/* Pagination Dots */}
-            <div className="flex justify-center gap-3 mt-10">
-              {certificates.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrentCertIndex(i)}
-                  className={`h-1.5 rounded-full transition-all duration-500 ${i === currentCertIndex ? 'w-12 bg-amber-500' : 'w-2 bg-slate-800 hover:bg-slate-700'}`}
-                />
-              ))}
-            </div>
-          </div>
-        </motion.section>
-
-        {/* Contact Section */}
-        <motion.section 
-          id="contact" 
-          className="scroll-mt-20"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
-          <div className="flex items-center gap-4 mb-12">
-            <div className="p-3 rounded-xl bg-indigo-500/10 border border-indigo-500/20 glow-indigo">
-              <Mail className="w-6 h-6 text-indigo-400" />
-            </div>
-            <h2 className="text-3xl font-bold text-white font-display">Get In Touch</h2>
-            <div className="h-px flex-1 bg-gradient-to-r from-slate-800 to-transparent ml-4" />
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            <div className="space-y-8">
-              <h3 className="text-4xl font-bold text-white leading-tight font-display">
-                Let's build something <span className="text-gradient">data-driven</span> together.
-              </h3>
-              <p className="text-slate-400 text-lg leading-relaxed">
-                Whether you have a question about manufacturing intelligence, need help with a Power BI dashboard, or just want to say hi, my inbox is always open.
-              </p>
-              
-              <div className="space-y-4">
-                <motion.a 
-                  whileHover={{ x: 10 }}
-                  href="mailto:nabeelahmad193221@gmail.com" 
-                  className="flex items-center gap-4 p-4 rounded-2xl bg-slate-900/40 border border-slate-800 hover:border-cyan-500/30 transition-all group"
-                >
-                  <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 group-hover:bg-cyan-500/10 transition-colors">
-                    <Mail className="w-5 h-5 text-cyan-400" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-mono text-slate-500 uppercase">Email Me</p>
-                    <p className="text-white font-medium">nabeelahmad193221@gmail.com</p>
-                  </div>
-                </motion.a>
-                <motion.a 
-                  whileHover={{ x: 10 }}
-                  href="https://wa.me/923246278872" 
-                  target="_blank" 
-                  rel="noreferrer" 
-                  className="flex items-center gap-4 p-4 rounded-2xl bg-slate-900/40 border border-slate-800 hover:border-emerald-500/30 transition-all group"
-                >
-                  <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 group-hover:bg-emerald-500/10 transition-colors">
-                    <Zap className="w-5 h-5 text-emerald-400" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-mono text-slate-500 uppercase">WhatsApp</p>
-                    <p className="text-white font-medium">+92 324 6278872</p>
-                  </div>
-                </motion.a>
-              </div>
-            </div>
-
-            <motion.form 
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              className="space-y-4 glass-card p-8 rounded-3xl relative overflow-hidden" 
-              onSubmit={handleFormSubmit}
-            >
-              <AnimatePresence>
-                {isSubmitted && (
-                  <motion.div 
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    className="absolute inset-0 z-20 bg-slate-900/90 backdrop-blur-md flex flex-col items-center justify-center text-center p-6"
-                  >
-                    <div className="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center mb-4 border border-emerald-500/30">
-                      <Zap className="w-8 h-8 text-emerald-400" />
-                    </div>
-                    <h4 className="text-2xl font-bold text-white mb-2">Message Sent!</h4>
-                    <p className="text-slate-400 text-sm">Thank you for reaching out. I'll get back to you as soon as possible.</p>
-                    <button 
-                      type="button"
-                      onClick={() => setIsSubmitted(false)}
-                      className="mt-6 text-cyan-400 text-xs font-mono uppercase tracking-widest hover:text-cyan-300 transition-colors"
-                    >
-                      Send another message
-                    </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-xs font-mono text-slate-500 uppercase ml-1">Name</label>
-                  <input 
-                    type="text" 
-                    name="name"
-                    required
-                    value={formState.name}
-                    onChange={handleFormChange}
-                    placeholder="John Doe" 
-                    className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 outline-none transition-all text-white" 
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-mono text-slate-500 uppercase ml-1">Email</label>
-                  <input 
-                    type="email" 
-                    name="email"
-                    required
-                    value={formState.email}
-                    onChange={handleFormChange}
-                    placeholder="john@example.com" 
-                    className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 outline-none transition-all text-white" 
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-mono text-slate-500 uppercase ml-1">Subject</label>
-                <input 
-                  type="text" 
-                  name="subject"
-                  value={formState.subject}
-                  onChange={handleFormChange}
-                  placeholder="Project Inquiry" 
-                  className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 outline-none transition-all text-white" 
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-mono text-slate-500 uppercase ml-1">Message</label>
-                <textarea 
-                  rows={4} 
-                  name="message"
-                  required
-                  value={formState.message}
-                  onChange={handleFormChange}
-                  placeholder="How can I help you?" 
-                  className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 outline-none transition-all text-white resize-none"
-                ></textarea>
-              </div>
-              <motion.button 
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                disabled={isSubmitting}
-                className="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold hover:opacity-90 transition-opacity shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2"
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    Sending...
-                  </>
-                ) : (
-                  "Send Message"
-                )}
-              </motion.button>
-            </motion.form>
-          </div>
-        </motion.section>
-
-        {/* Closing Quote */}
-        <section className="text-center py-24">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            className="inline-flex flex-col items-center"
-          >
-            <p className="text-2xl md:text-4xl font-light text-slate-400 mb-8 max-w-3xl leading-tight">
-              "Turning complex data into <span className="text-white font-medium">simple, actionable stories</span>."
-            </p>
-            <div className="h-1 w-12 bg-gradient-to-r from-indigo-400 to-violet-500 rounded-full" />
-          </motion.div>
-        </section>
-      </main>
-
-      <footer className="border-t border-slate-800/50 bg-slate-950 py-12 px-6">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-indigo-400" />
-            <span className="text-white font-bold tracking-widest uppercase text-sm">Nabeel Ahmad</span>
-          </div>
-          <div className="flex flex-wrap justify-center gap-6 text-sm font-medium text-slate-500">
-            <a href="https://github.com/nabeelahmad193221" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">
-              GitHub
-            </a>
-            <a href="https://www.linkedin.com/in/nabeel-ahmad-a92a48399" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">
-              LinkedIn
-            </a>
-            <a href="https://wa.me/923246278872" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">
-              WhatsApp
-            </a>
-            <a href="https://www.instagram.com/nabeelahmad2412?igsh=MWk1ZHJqd2E0eWRoYQ==" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">
-              Instagram
-            </a>
-            <a href="mailto:nabeelahmad193221@gmail.com" className="hover:text-white transition-colors">
-              Email
-            </a>
-          </div>
-        </div>
-      </footer>
-
-      {/* AI Chat Widget */}
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-4">
-        <AnimatePresence>
-          {/* Scroll to Top Button */}
-          {showScrollTop && (
-            <motion.button
-              initial={{ opacity: 0, scale: 0.5, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.5, y: 20 }}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="flex items-center gap-3 cursor-pointer animate-fade-in"
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="w-12 h-12 rounded-full bg-slate-900 border border-slate-800 text-slate-400 flex items-center justify-center hover:bg-slate-800 hover:text-white transition-all shadow-xl"
             >
-              <ChevronLeft className="w-6 h-6 rotate-90" />
-            </motion.button>
-          )}
-
-          {isChatOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: 20, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 20, scale: 0.95 }}
-              className="absolute bottom-20 right-0 w-[350px] md:w-[400px] h-[500px] bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col backdrop-blur-xl"
-            >
-              {/* Chat Header */}
-              <div className="p-4 bg-slate-800/50 border-b border-slate-700 flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-indigo-500/20 flex items-center justify-center border border-indigo-500/30">
-                    <Bot className="w-6 h-6 text-indigo-400" />
-                  </div>
-                  <div>
-                    <h4 className="text-white font-bold text-sm">Nabeel's AI</h4>
-                    <div className="flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      <span className="text-[10px] text-slate-400 uppercase font-mono tracking-wider">Online</span>
-                    </div>
-                  </div>
+              <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-cyan-400 p-0.5 flex items-center justify-center shadow-lg shadow-indigo-500/20 overflow-hidden shrink-0 group transition-all duration-300 hover:scale-105 active:scale-95">
+                <div className="w-full h-full rounded-full overflow-hidden bg-slate-950">
+                  <img src={profileImage} alt="N" className="w-full h-full object-cover" />
                 </div>
+              </div>
+              <div className="flex flex-col">
+                <span className={`font-bold tracking-tight text-sm font-display ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                  NABEEL AHMAD
+                </span>
+                <span className="text-[10px] font-mono text-indigo-500 font-bold tracking-widest uppercase">
+                  DATA ANALYST
+                </span>
+              </div>
+            </motion.div>
+
+            {/* Desktop Nav Actions */}
+            <div className="flex items-center gap-8">
+              <div className="hidden xl:flex items-center gap-1.5 bg-slate-100/80 dark:bg-slate-900/50 p-1.5 rounded-full border border-slate-200/40 dark:border-slate-800/40">
+                {navLinks.map((link) => {
+                  const isActive = activeSection === link.id;
+                  return (
+                    <a 
+                      key={link.name}
+                      href={link.href}
+                      className={`text-xs font-semibold px-4 py-2 rounded-full transition-all tracking-wide ${
+                        isActive
+                          ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/20'
+                          : theme === 'dark'
+                            ? 'text-slate-400 hover:text-white'
+                            : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      {link.name}
+                    </a>
+                  );
+                })}
+              </div>
+
+              {/* Utility Panel */}
+              <div className="flex items-center gap-3">
                 <button 
-                  onClick={() => setIsChatOpen(false)}
-                  className="p-2 hover:bg-slate-700 rounded-xl transition-colors text-slate-400"
+                  onClick={toggleTheme}
+                  className={`p-2.5 rounded-xl border transition-all cursor-pointer ${
+                    theme === 'dark' 
+                      ? 'bg-slate-900 border-slate-800 text-amber-400 hover:border-amber-400/50' 
+                      : 'bg-white border-slate-200 text-indigo-600 hover:border-indigo-600/50 shadow-sm'
+                  }`}
+                  aria-label="Toggle visual theme"
                 >
-                  <X className="w-5 h-5" />
+                  {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                </button>
+
+                <button 
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  className={`xl:hidden p-2.5 rounded-xl border transition-all cursor-pointer ${
+                    theme === 'dark' ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-sm'
+                  }`}
+                >
+                  <Menu className="w-5 h-5" />
                 </button>
               </div>
+            </div>
+          </div>
 
-              {/* Chat Messages */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide bg-slate-950/50">
-                {chatMessages.map((msg, i) => (
-                  <motion.div 
-                    key={i} 
-                    initial={{ opacity: 0, x: msg.role === 'user' ? 20 : -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                  >
-                    <div className={`max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed ${
-                      msg.role === 'user' 
-                        ? 'bg-gradient-to-br from-indigo-600 to-violet-700 text-white rounded-tr-none shadow-lg shadow-indigo-900/20' 
-                        : 'bg-slate-800/80 text-slate-200 rounded-tl-none border border-slate-700/50 backdrop-blur-sm'
-                    }`}>
-                      {msg.text}
-                    </div>
-                  </motion.div>
+          {/* Mobile Menu Dropdown */}
+          <AnimatePresence>
+            {isMobileMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className={`xl:hidden border-t overflow-hidden ${
+                  theme === 'dark' ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-200'
+                }`}
+              >
+                <div className="p-6 flex flex-col gap-3">
+                  {navLinks.map((link) => (
+                    <a 
+                      key={link.name}
+                      href={link.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={`text-sm font-semibold p-3.5 rounded-xl transition-all ${
+                        activeSection === link.id
+                          ? 'bg-indigo-500/10 text-indigo-500'
+                          : theme === 'dark'
+                            ? 'text-slate-400 hover:bg-slate-900 hover:text-white'
+                            : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                      }`}
+                    >
+                      {link.name}
+                    </a>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </nav>
+
+        {/* Outer Background Interactive Grids & Node Arrays with Deep Parallax */}
+        <div id="home" className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+          {/* Dynamic Parallax Background Slide Container */}
+          <motion.div style={{ y: gridY }} className="absolute inset-x-0 -top-40 h-[220vh] pointer-events-none">
+            <div className={`absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_100%)] ${
+              theme === 'dark' ? 'opacity-30' : 'opacity-[0.06]'
+            }`} />
+            
+            {/* Animated node matrix */}
+            <svg className={`absolute inset-0 w-full h-full ${theme === 'dark' ? 'opacity-25' : 'opacity-[0.04]'}`}>
+              <pattern id="nodes-mesh" x="0" patternUnits="userSpaceOnUse" width="120" height="120">
+                <circle cx="10" cy="10" r="1.5" fill="#6366f1" />
+                <line x1="10" y1="10" x2="110" y2="10" stroke="#6366f1" strokeWidth="0.5" strokeDasharray="4 4" />
+                <line x1="10" y1="10" x2="10" y2="110" stroke="#6366f1" strokeWidth="0.5" strokeDasharray="4 4" />
+              </pattern>
+              <rect width="100%" height="100%" fill="url(#nodes-mesh)" />
+            </svg>
+          </motion.div>
+
+          {/* Glowing Animated Gradient Orbs in Background */}
+          <motion.div 
+            style={{ y: orb1Y }}
+            animate={{ 
+              scale: [1, 1.15, 1],
+              opacity: [0.18, 0.28, 0.18]
+            }}
+            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+            className={`absolute top-[18%] left-[8%] w-[380px] h-[380px] rounded-full blur-[130px] mix-blend-screen pointer-events-none ${
+              theme === 'dark' ? 'bg-indigo-600/40' : 'bg-indigo-200/30'
+            }`} 
+          />
+          <motion.div 
+            style={{ y: orb2Y }}
+            animate={{ 
+              scale: [1.15, 1, 1.15],
+              opacity: [0.12, 0.22, 0.12]
+            }}
+            transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+            className={`absolute top-[55%] right-[8%] w-[480px] h-[480px] rounded-full blur-[150px] mix-blend-screen pointer-events-none ${
+              theme === 'dark' ? 'bg-cyan-600/40' : 'bg-cyan-200/30'
+            }`} 
+          />
+        </div>
+
+        {/* Hero Landing Core */}
+        <header className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 pt-32 pb-16 overflow-hidden">
+          <ThreeDBackground />
+
+          <div className="text-center max-w-5xl mx-auto relative z-10">
+            {/* Holographic Spinning Metrics Hub */}
+            <div className="mb-10 relative inline-block">
+              {/* Spinning outer orbit */}
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+                className="w-48 h-48 md:w-56 md:h-56 rounded-full border border-indigo-500/25 flex items-center justify-center relative pointer-events-none"
+              >
+                <div className="absolute inset-0 rounded-full border-t-2 border-indigo-500/40 animate-spin" style={{ animationDuration: '4s' }} />
+                <div className="absolute inset-3 rounded-full border-b-2 border-cyan-500/40 animate-spin" style={{ animationDuration: '6s', animationDirection: 'reverse' }} />
+                
+                {/* Satellite data orbit points */}
+                {[...Array(3)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute w-2.5 h-2.5 bg-cyan-400 rounded-full shadow-[0_0_12px_rgba(34,211,238,0.9)]"
+                    style={{
+                      transformOrigin: `center ${85 + i * 15}px`,
+                      top: -12
+                    }}
+                  />
                 ))}
-                {isTyping && (
+              </motion.div>
+
+              {/* Absolute Centered static profile photo with glow & hover animations */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <motion.div
+                  animate={{ scale: [1, 1.04, 1] }}
+                  transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+                  whileHover={{ scale: 1.12 }}
+                  className="w-32 h-32 md:w-36 md:h-36 rounded-full overflow-hidden border-2 border-indigo-500/80 bg-slate-950 flex items-center justify-center shadow-[0_0_40px_rgba(99,102,241,0.45)] cursor-pointer relative z-20 group"
+                >
+                  <img 
+                    src={profileImage} 
+                    alt="Nabeel Ahmad" 
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-108" 
+                    referrerPolicy="no-referrer"
+                  />
+                  {/* Subtle technical overlay scan lines/reflection */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/10 via-transparent to-white/10 pointer-events-none" />
+                </motion.div>
+              </div>
+            </div>
+
+            {/* Glowing Tagline Pill */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.6 }}
+              className={`inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full border backdrop-blur-md shadow-2xl ${
+                theme === 'dark' ? 'bg-slate-900/80 border-slate-800' : 'bg-white/80 border-slate-200'
+              }`}
+            >
+              <Sparkles className="w-4 h-4 text-indigo-500 animate-pulse" />
+              <span className="text-indigo-600 dark:text-indigo-400 text-xs font-mono font-bold uppercase tracking-wider">
+                Active Analyst at Haier Pakistan
+              </span>
+            </motion.div>
+
+            {/* Magnificent Typography Title */}
+            <h1 className={`text-5xl md:text-8xl lg:text-9xl font-black tracking-tight mb-6 font-display leading-[1] ${
+              theme === 'dark' ? 'text-white' : 'text-slate-900'
+            }`}>
+              NABEEL <span className="text-gradient">AHMAD</span>
+            </h1>
+
+            <p className={`text-base md:text-xl max-w-3xl mx-auto font-light leading-relaxed mb-10 ${
+              theme === 'dark' ? 'text-slate-400' : 'text-slate-600'
+            }`}>
+              Designing operational intelligence pipelines. Transforming factory downtime, SAP logs, and supply records into optimal KPI architectures.
+            </p>
+
+            {/* Primary Action Buttons with premium hover indicators */}
+            <div className="flex flex-wrap justify-center gap-4 relative z-10">
+              <motion.a 
+                whileHover={{ scale: 1.05 }} 
+                whileTap={{ scale: 0.95 }} 
+                href="#dashboard" 
+                className="flex items-center gap-2.5 px-8 py-4 rounded-xl bg-indigo-500 text-white font-bold hover:bg-indigo-400 transition-colors shadow-lg shadow-indigo-500/25 cursor-pointer text-sm md:text-base"
+              >
+                <Cpu className="w-5 h-5 animate-pulse" /> View Live Simulator
+              </motion.a>
+              
+              <motion.a 
+                whileHover={{ scale: 1.05 }} 
+                whileTap={{ scale: 0.95 }} 
+                href="#projects" 
+                className="flex items-center gap-2.5 px-8 py-4 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 transition-colors shadow-lg shadow-emerald-500/25 cursor-pointer text-sm md:text-base"
+              >
+                <FolderGit2 className="w-5 h-5" /> Explore Case Studies
+              </motion.a>
+
+              <motion.a 
+                whileHover={{ scale: 1.05 }} 
+                whileTap={{ scale: 0.95 }} 
+                href="/Nabeel_Ahmad_Resume.pdf" 
+                download
+                className={`flex items-center gap-2.5 px-8 py-4 rounded-xl font-bold transition-all shadow-md text-sm md:text-base ${
+                  theme === 'dark' ? 'bg-slate-800 text-white border border-slate-700 hover:bg-slate-700' : 'bg-white text-slate-800 border border-slate-200 hover:bg-slate-50'
+                }`}
+              >
+                <FileText className="w-5 h-5" /> Download Resume
+              </motion.a>
+            </div>
+          </div>
+        </header>
+
+        {/* Global Dashboard Main Core */}
+        <main className="relative z-10 max-w-7xl mx-auto px-6 py-20 space-y-36">
+
+          {/* Section: Dynamic Stat counters */}
+          <section className="scroll-mt-28">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {mainStatsList.map((stat, sIdx) => (
+                <div 
+                  key={sIdx} 
+                  className={`p-8 rounded-[2rem] border transition-all duration-300 relative overflow-hidden ${
+                    theme === 'dark' ? 'bg-slate-900/40 border-slate-850 hover:bg-slate-900' : 'bg-white border-slate-200 shadow-xl'
+                  }`}
+                >
+                  <p className="text-3xl lg:text-5xl font-black font-display text-indigo-500 dark:text-indigo-400 mb-2">
+                    {stat.value}
+                  </p>
+                  <h4 className={`text-base font-bold font-display ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                    {stat.label}
+                  </h4>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+                    {stat.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+          
+          {/* Section: Executive Summary (About Me) */}
+          <motion.section 
+            id="about" 
+            className="scroll-mt-28"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex items-center gap-4 mb-12">
+              <div className={`p-3 rounded-xl border glow-indigo ${
+                theme === 'dark' ? 'bg-indigo-500/10 border-indigo-500/20' : 'bg-indigo-50 border-indigo-200'
+              }`}>
+                <User className="w-6 h-6 text-indigo-500 dark:text-indigo-400" />
+              </div>
+              <h2 className={`text-3xl lg:text-4xl font-extrabold font-display ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                Executive Summary
+              </h2>
+              <div className={`h-px flex-1 bg-gradient-to-r ml-4 ${
+                theme === 'dark' ? 'from-slate-800 to-transparent' : 'from-slate-200 to-transparent'
+              }`} />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+              {/* Profile Card */}
+              <TiltCard className="lg:col-span-4 flex rounded-[2.5rem]">
+                <div className={`p-8 rounded-[2.5rem] border shadow-xl relative overflow-hidden flex flex-col items-center justify-center text-center w-full h-full group ${
+                  theme === 'dark' ? 'glass-card border-slate-800/80' : 'bg-white border-slate-200'
+                }`}>
+                  <div className={`absolute -right-12 -top-12 w-44 h-44 blur-[80px] rounded-full mix-blend-screen pointer-events-none opacity-20 ${
+                    theme === 'dark' ? 'bg-indigo-500' : 'bg-indigo-300'
+                  }`} />
+                  
+                  <div className="relative w-44 h-44 md:w-48 md:h-48 rounded-full p-1 bg-gradient-to-tr from-indigo-500 via-cyan-400 to-indigo-600 shadow-[0_0_25px_rgba(99,102,241,0.25)] group-hover:shadow-[0_0_40px_rgba(99,102,241,0.45)] transition-all duration-500 mb-6 shrink-0">
+                    <div className="w-full h-full rounded-full overflow-hidden bg-slate-950">
+                      <img 
+                        src={profileImage} 
+                        alt="Nabeel Ahmad" 
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-108" 
+                        referrerPolicy="no-referrer"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className={`text-2xl font-extrabold font-display tracking-tight ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                      Nabeel Ahmad
+                    </h3>
+                    <p className="text-xs font-mono font-bold text-indigo-500 dark:text-indigo-400 mt-1 uppercase tracking-widest">
+                      Data Analyst
+                    </p>
+                    <p className={`text-xs mt-3 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+                      Haier Pakistan Co. • Lahore
+                    </p>
+                  </div>
+                </div>
+              </TiltCard>
+
+              {/* Executive Summary */}
+              <div className="lg:col-span-5 flex flex-col justify-between gap-6">
+                <TiltCard className="rounded-[2.5rem] flex-grow">
+                  <div className={`p-8 md:p-10 rounded-[2.5rem] border leading-relaxed shadow-xl relative overflow-hidden h-full group ${
+                    theme === 'dark' ? 'glass-card border-slate-800/80' : 'bg-white border-slate-200'
+                  }`}>
+                    <div className={`absolute -right-20 -top-20 w-64 h-64 blur-[100px] rounded-full mix-blend-screen pointer-events-none opacity-20 ${
+                      theme === 'dark' ? 'bg-indigo-505' : 'bg-indigo-301'
+                    }`} />
+                    
+                    <h3 className={`text-2xl font-extrabold mb-4 font-display ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                      Strategic Analyst @ Haier
+                    </h3>
+                    <div className={`space-y-4 text-sm md:text-base ${theme === 'dark' ? 'text-slate-400' : 'text-slate-650'}`}>
+                      <p>
+                        I specialize in <span className="text-indigo-500 dark:text-indigo-400 font-semibold italic">Manufacturing Intelligence</span>—where raw factory data meets strategic decision-making. My work at Haier Pakistan involves optimizing production efficiency through real-time KPI monitoring and SAP ERP integration.
+                      </p>
+                      <p>
+                        With architectural precision, I build data pipelines that transform fragmented metrics into cohesive narratives, focusing on <span className="font-bold underline decoration-indigo-400 decoration-2">tangible operations</span>.
+                      </p>
+                    </div>
+                  </div>
+                </TiltCard>
+
+                <div className="grid grid-cols-3 gap-3">
+                  {[
+                    { label: "Exp", value: "2+ Years" },
+                    { label: "City", value: "Lahore" },
+                    { label: "Active", value: "Available" }
+                  ].map((stat, i) => (
+                    <div key={i} className={`p-4 rounded-3xl border text-center ${
+                      theme === 'dark' ? 'bg-slate-900/50 border-slate-850' : 'bg-slate-50 border-slate-100'
+                    }`}>
+                      <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-0.5">{stat.label}</p>
+                      <p className={`text-xs font-black ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>{stat.value}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Specializations */}
+              <TiltCard className="lg:col-span-3 flex rounded-[2.5rem]">
+                <div className={`p-8 rounded-[2.5rem] border shadow-xl relative overflow-hidden flex flex-col justify-between h-full w-full group ${
+                  theme === 'dark' ? 'bg-gradient-to-br from-slate-900 to-slate-950 border-slate-800/80' : 'bg-white border-slate-200'
+                }`}>
+                  <div className={`absolute top-0 right-0 w-32 h-32 blur-3xl rounded-full -mr-16 -mt-16 transition-colors ${
+                    theme === 'dark' ? 'bg-indigo-500/10' : 'bg-indigo-100'
+                  }`} />
+                  
+                  <div>
+                    <h3 className="text-xs font-mono text-indigo-500 dark:text-indigo-400 uppercase tracking-widest mb-6 relative z-10 flex items-center gap-2 font-bold font-display">
+                      <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-ping" />
+                      Ecosystem
+                    </h3>
+                    <ul className="space-y-4 relative z-10">
+                      {[
+                        "Manufacturing KPI",
+                        "Predictive Cycles",
+                        "SAP ERP Datasets",
+                        "Visualizations",
+                        "Operational Strategy"
+                      ].map((item, i) => (
+                        <motion.li 
+                          key={i} 
+                          className={`flex items-center gap-2.5 text-xs font-semibold ${theme === 'dark' ? 'text-slate-300' : 'text-slate-700'}`}
+                        >
+                          <div className="w-6 h-6 rounded-md bg-indigo-500/10 flex items-center justify-center border border-indigo-500/15 transition-colors shrink-0">
+                            <Check className={`w-3.5 h-3.5 ${theme === 'dark' ? 'text-indigo-400' : 'text-indigo-500'}`} />
+                          </div>
+                          <span className="truncate">{item}</span>
+                        </motion.li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="pt-6 relative z-10">
+                    <div className={`p-4 rounded-2xl border ${
+                      theme === 'dark' ? 'bg-slate-950/50 border-slate-850' : 'bg-slate-50 border-slate-100'
+                    }`}>
+                      <p className="text-[10px] font-mono text-slate-500 uppercase tracking-wider mb-0.5 font-bold">Motto</p>
+                      <p className={`italic font-serif leading-relaxed text-xs ${theme === 'dark' ? 'text-slate-300' : 'text-slate-650'}`}>
+                        "In God we trust. All others bring data."
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </TiltCard>
+            </div>
+          </motion.section>
+
+          {/* Section: Core Services */}
+          <motion.section 
+            id="services" 
+            className="scroll-mt-28"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex items-center gap-4 mb-12">
+              <div className={`p-3 rounded-xl border glow-indigo ${
+                theme === 'dark' ? 'bg-indigo-500/10 border-indigo-500/20' : 'bg-indigo-50 border-indigo-200'
+              }`}>
+                <Zap className="w-6 h-6 text-indigo-500" />
+              </div>
+              <h2 className={`text-3xl lg:text-4xl font-extrabold font-display ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                Core Services
+              </h2>
+              <div className={`h-px flex-1 bg-gradient-to-r ml-4 ${
+                theme === 'dark' ? 'from-slate-800 to-transparent' : 'from-slate-200 to-transparent'
+              }`} />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {services.map((service, i) => (
+                <TiltCard key={i} className="rounded-[2.5rem]">
+                  <div
+                    className={`p-8 rounded-[2.5rem] border transition-all duration-300 group cursor-default relative overflow-hidden h-full ${
+                      theme === 'dark' 
+                        ? 'bg-slate-900/40 border-slate-850 hover:bg-slate-900 hover:border-indigo-500/20' 
+                        : 'bg-white border-slate-205 shadow-sm'
+                    }`}
+                  >
+                    <div className={`p-4 rounded-2xl mb-6 inline-block transition-transform duration-300 group-hover:scale-110 ${
+                      theme === 'dark' ? 'bg-slate-950 border border-slate-850' : 'bg-slate-50 border border-slate-100'
+                    }`}>
+                      <service.icon className={`w-7 h-7 ${service.color}`} />
+                    </div>
+                    <h3 className={`text-xl font-extrabold mb-4 font-display ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                      {service.title}
+                    </h3>
+                    <p className={`text-sm leading-relaxed ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}>
+                      {service.desc}
+                    </p>
+                  </div>
+                </TiltCard>
+              ))}
+            </div>
+          </motion.section>
+
+          {/* Section: Interactive Skills Visualizer */}
+          <motion.section 
+            id="skills" 
+            className="scroll-mt-28"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex items-center gap-4 mb-12">
+              <div className={`p-3 rounded-xl border glow-indigo ${
+                theme === 'dark' ? 'bg-indigo-500/10 border-indigo-500/20' : 'bg-indigo-50 border-indigo-200'
+              }`}>
+                <Layers className="w-6 h-6 text-indigo-500 dark:text-indigo-400" />
+              </div>
+              <h2 className={`text-3xl lg:text-4xl font-extrabold font-display ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                Skills & Ecosystem
+              </h2>
+              <div className={`h-px flex-1 bg-gradient-to-r ml-4 ${
+                theme === 'dark' ? 'from-slate-800 to-transparent' : 'from-slate-200 to-transparent'
+              }`} />
+            </div>
+
+            <SkillsVisualizer theme={theme} />
+          </motion.section>
+
+          {/* Section: Timeline Experience & Education */}
+          <motion.section 
+            id="experience" 
+            className="scroll-mt-28"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex items-center gap-4 mb-12">
+              <div className={`p-3 rounded-xl border glow-indigo ${
+                theme === 'dark' ? 'bg-indigo-500/10 border-indigo-500/20' : 'bg-indigo-50 border-indigo-200'
+              }`}>
+                <Briefcase className="w-6 h-6 text-indigo-500 dark:text-indigo-400" />
+              </div>
+              <h2 className={`text-3xl lg:text-4xl font-extrabold font-display ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                Professional Journey
+              </h2>
+              <div className={`h-px flex-1 bg-gradient-to-r ml-4 ${
+                theme === 'dark' ? 'from-slate-800 to-transparent' : 'from-slate-200 to-transparent'
+              }`} />
+            </div>
+
+            <Timeline theme={theme} />
+          </motion.section>
+
+          {/* New Section: Recharts KPI Interactive Dashboard */}
+          <motion.section 
+            id="dashboard" 
+            className="scroll-mt-28"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex items-center gap-4 mb-12">
+              <div className={`p-3 rounded-xl border glow-indigo ${
+                theme === 'dark' ? 'bg-indigo-500/10 border-indigo-500/20' : 'bg-indigo-50 border-indigo-200'
+              }`}>
+                <BarChart3 className="w-6 h-6 text-indigo-500 dark:text-indigo-400" />
+              </div>
+              <h2 className={`text-3xl lg:text-4xl font-extrabold font-display ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                Industry 4.0 Dashboard Showcase
+              </h2>
+              <div className={`h-px flex-1 bg-gradient-to-r ml-4 ${
+                theme === 'dark' ? 'from-slate-800 to-transparent' : 'from-slate-200 to-transparent'
+              }`} />
+            </div>
+
+            <InteractiveDashboard theme={theme} />
+          </motion.section>
+
+          {/* Section: Projects (Case Studies) with Filters */}
+          <motion.section 
+            id="projects" 
+            className="scroll-mt-28"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12 pb-6 border-b border-slate-200/50 dark:border-slate-800/50">
+              <div className="flex items-center gap-4">
+                <div className={`p-3 rounded-xl border glow-indigo ${
+                  theme === 'dark' ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-emerald-50 border-emerald-200'
+                }`}>
+                  <FolderGit2 className="w-6 h-6 text-emerald-500" />
+                </div>
+                <div>
+                  <h2 className={`text-3xl lg:text-4xl font-extrabold font-display ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                    Case Studies & Repositories
+                  </h2>
+                </div>
+              </div>
+
+              {/* Dynamic Filtering Panel */}
+              <div className="flex flex-wrap items-center gap-2 bg-slate-100/80 dark:bg-slate-900/50 p-1 rounded-2xl border border-slate-200/40 dark:border-slate-800/40">
+                {(['All', 'Power BI', 'Python', 'SQL', 'Excel'] as const).map((filter) => (
+                  <button
+                    key={filter}
+                    onClick={() => setProjectFilter(filter)}
+                    className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                      projectFilter === filter
+                        ? 'bg-emerald-500 text-white shadow-md'
+                        : theme === 'dark'
+                          ? 'text-slate-400 hover:text-white'
+                          : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    {filter}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-16">
+              <AnimatePresence mode="popLayout">
+                {filteredProjects.length === 0 ? (
                   <motion.div 
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="flex justify-start"
+                    exit={{ opacity: 0 }}
+                    className="text-center p-12 text-slate-500"
                   >
-                    <div className="bg-slate-800/80 text-slate-200 p-4 rounded-2xl rounded-tl-none border border-slate-700/50 flex gap-1.5 items-center">
-                      <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce" />
-                      <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce [animation-delay:0.2s]" />
-                      <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce [animation-delay:0.4s]" />
+                    No projects found for current criteria.
+                  </motion.div>
+                ) : (
+                  filteredProjects.map((project, idx) => (
+                    <motion.div 
+                      key={project.name}
+                      layout
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -30 }}
+                      transition={{ duration: 0.6 }}
+                      className="w-full"
+                    >
+                      <TiltCard className="rounded-[2.5rem]">
+                        <div className={`grid grid-cols-1 lg:grid-cols-2 gap-12 items-center p-8 md:p-12 rounded-[2.5rem] border transition-all ${
+                          theme === 'dark' ? 'glass-card hover:border-emerald-500/20' : 'bg-white border-slate-200'
+                        }`}>
+                          <div className={`relative rounded-3xl overflow-hidden group aspect-video border ${
+                            theme === 'dark' ? 'border-slate-850' : 'border-slate-200'
+                          }`}>
+                            <img 
+                              src={project.image} 
+                              alt={project.name}
+                              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                              referrerPolicy="no-referrer"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent flex flex-col justify-end p-8 gap-4">
+                              <span className="text-emerald-400 font-mono text-xs font-black uppercase tracking-widest bg-emerald-500/10 border border-emerald-500/25 px-3 py-1.5 rounded-xl self-start">
+                                IMPACT: {project.impact}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="space-y-6">
+                            <div className="flex flex-wrap gap-2">
+                              {project.tools.map(tool => (
+                                <span key={tool} className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold border ${
+                                  theme === 'dark' ? 'bg-slate-950 border-slate-800 text-emerald-400' : 'bg-emerald-50 border-emerald-100 text-emerald-600'
+                                }`}>
+                                  {tool}
+                                </span>
+                              ))}
+                            </div>
+                            <h3 className={`text-3xl md:text-4xl font-extrabold font-display leading-tight ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                              {project.name}
+                            </h3>
+                            <p className={`text-base md:text-lg leading-relaxed ${theme === 'dark' ? 'text-slate-400' : 'text-slate-650'}`}>
+                              {project.overview}
+                            </p>
+                            
+                            <div className="space-y-4 pt-2">
+                              <div className={`p-6 rounded-2xl border ${
+                                theme === 'dark' ? 'bg-slate-950/50 border-slate-850' : 'bg-slate-50 border-slate-100'
+                              }`}>
+                                <h4 className={`text-xs font-black uppercase tracking-widest mb-2 ${theme === 'dark' ? 'text-emerald-400' : 'text-emerald-600'}`}>
+                                  The Problem
+                                </h4>
+                                <p className={`text-sm leading-relaxed ${theme === 'dark' ? 'text-slate-300' : 'text-slate-700'}`}>
+                                  {project.problem}
+                                </p>
+                              </div>
+                              <div className={`p-6 rounded-2xl border ${
+                                theme === 'dark' ? 'bg-slate-950/50 border-slate-850' : 'bg-slate-50 border-slate-100'
+                              }`}>
+                                <h4 className={`text-xs font-black uppercase tracking-widest mb-2 ${theme === 'dark' ? 'text-emerald-400' : 'text-emerald-600'}`}>
+                                  Key Outcome
+                                </h4>
+                                <p className={`text-sm leading-relaxed ${theme === 'dark' ? 'text-slate-300' : 'text-slate-700'}`}>
+                                  {project.outcome}
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="pt-4 flex gap-4 max-w-sm">
+                              <a 
+                                href={project.url} 
+                                target="_blank" 
+                                rel="noreferrer" 
+                                className="flex-1 inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-xl bg-slate-900 dark:bg-slate-800 text-white font-bold hover:bg-slate-800 dark:hover:bg-slate-700 transition-colors shadow-lg self-start text-sm"
+                              >
+                                <Github className="w-5 h-5" /> View Git Code
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </TiltCard>
+                    </motion.div>
+                  ))
+                )}
+              </AnimatePresence>
+            </div>
+          </motion.section>
+
+          {/* Section: Certificates Slider */}
+          <motion.section 
+            id="certificates" 
+            className="scroll-mt-28"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex items-center gap-4 mb-12">
+              <div className={`p-3 rounded-xl border glow-indigo ${
+                theme === 'dark' ? 'bg-amber-500/10 border-amber-500/20' : 'bg-amber-50 border-amber-200'
+              }`}>
+                <Award className="w-6 h-6 text-amber-500" />
+              </div>
+              <h2 className={`text-3xl lg:text-4xl font-extrabold font-display ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                Certificates & Achievements
+              </h2>
+              <div className={`h-px flex-1 bg-gradient-to-r ml-4 ${
+                theme === 'dark' ? 'from-slate-800 to-transparent' : 'from-slate-200 to-transparent'
+              }`} />
+            </div>
+
+            <div className="relative group max-w-4xl mx-auto">
+              <div className={`overflow-hidden rounded-[2.5rem] border backdrop-blur-sm relative shadow-2xl min-h-[350px] flex items-center justify-center ${
+                theme === 'dark' ? 'bg-slate-900/40 border-slate-850' : 'bg-white border-slate-200'
+              }`}>
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentCertIndex}
+                    initial={{ x: 50, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: -50, opacity: 0 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    className="p-8 md:p-12 flex flex-col items-center text-center w-full"
+                  >
+                    <div className="w-full max-w-2xl">
+                      <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-[10px] font-bold uppercase tracking-wider mb-6 ${
+                        theme === 'dark' ? 'bg-amber-500/10 border-amber-500/20 text-amber-500 font-bold' : 'bg-amber-50 border-amber-100 text-amber-600 font-bold'
+                      }`}>
+                        Verified Achievement
+                      </div>
+                      
+                      <h3 className={`text-2xl md:text-4xl font-black mb-6 leading-tight font-display ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                        {certificates[currentCertIndex].name}
+                      </h3>
+                      
+                      <p className={`mb-10 text-base leading-relaxed max-w-xl mx-auto ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}>
+                        Professional certification demonstrating expertise and commitment to industry excellence in data analytics and manufacturing intelligence operations.
+                      </p>
+                      
+                      <div className="flex flex-wrap justify-center gap-4">
+                        <motion.a 
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          href={certificates[currentCertIndex].url} 
+                          target="_blank" 
+                          rel="noreferrer" 
+                          className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-amber-500 text-slate-950 font-bold hover:bg-amber-400 transition-all shadow-lg group/btn text-sm md:text-base"
+                        >
+                          Verify Online <ExternalLink className="w-5 h-5 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
+                        </motion.a>
+                        <motion.a 
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          href={certificates[currentCertIndex].pdf} 
+                          target="_blank" 
+                          rel="noreferrer" 
+                          className={`inline-flex items-center gap-3 px-8 py-4 rounded-2xl font-bold transition-all border group/btn text-sm md:text-base ${
+                            theme === 'dark' ? 'bg-slate-800 text-white border-slate-705 hover:bg-slate-700' : 'bg-slate-100 text-slate-900 border-slate-205 hover:bg-slate-200'
+                          }`}
+                        >
+                          View Plan PDF <FileText className="w-5 h-5 group-hover/btn:scale-110 transition-transform" />
+                        </motion.a>
+                      </div>
                     </div>
                   </motion.div>
-                )}
-                <div ref={chatEndRef} />
+                </AnimatePresence>
               </div>
 
-              {/* Chat Input */}
-              <div className="p-4 bg-slate-800/30 border-t border-slate-700">
-                <div className="relative">
+              {/* Slider controls */}
+              <button 
+                onClick={prevCert}
+                className={`absolute -left-4 md:-left-6 top-1/2 -translate-y-1/2 p-4 rounded-2xl border transition-all shadow-xl z-20 cursor-pointer ${
+                  theme === 'dark' 
+                    ? 'bg-slate-900 border-slate-800 text-white hover:border-amber-500/50 hover:bg-slate-800' 
+                    : 'bg-white border-slate-200 text-slate-900 hover:border-amber-500/50 hover:bg-slate-50'
+                }`}
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+              <button 
+                onClick={nextCert}
+                className={`absolute -right-4 md:-right-6 top-1/2 -translate-y-1/2 p-4 rounded-2xl border transition-all shadow-xl z-20 cursor-pointer ${
+                  theme === 'dark' 
+                    ? 'bg-slate-900 border-slate-800 text-white hover:border-amber-500/50 hover:bg-slate-800' 
+                    : 'bg-white border-slate-200 text-slate-900 hover:border-amber-500/50 hover:bg-slate-50'
+                }`}
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
+
+              {/* Pagination indicators */}
+              <div className="flex justify-center gap-3 mt-10">
+                {certificates.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentCertIndex(i)}
+                    className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                      i === currentCertIndex 
+                        ? 'w-12 bg-amber-500' 
+                        : theme === 'dark' ? 'w-2 bg-slate-800 hover:bg-slate-700' : 'w-2 bg-slate-200 hover:bg-slate-300'
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+          </motion.section>
+
+          {/* Section: Contact & Chat Interface */}
+          <motion.section 
+            id="contact" 
+            className="scroll-mt-28"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex items-center gap-4 mb-12">
+              <div className={`p-3 rounded-xl border glow-indigo ${
+                theme === 'dark' ? 'bg-indigo-500/10 border-indigo-500/20' : 'bg-indigo-50 border-indigo-200'
+              }`}>
+                <Mail className="w-6 h-6 text-indigo-500 dark:text-indigo-400" />
+              </div>
+              <h2 className={`text-3xl lg:text-4xl font-extrabold font-display ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                Get In Touch
+              </h2>
+              <div className={`h-px flex-1 bg-gradient-to-r ml-4 ${
+                theme === 'dark' ? 'from-slate-800 to-transparent' : 'from-slate-200 to-transparent'
+              }`} />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+              
+              {/* Left Contact coordinates details */}
+              <div className="space-y-8">
+                <h3 className={`text-4xl md:text-5xl font-black leading-tight font-display ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                  Let's build something <span className="text-gradient font-black">data-driven</span> together.
+                </h3>
+                <p className={`text-base md:text-lg leading-relaxed ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}>
+                  Whether you have a query on downtime metrics, require SAP ERP analysis assistance, or want to collaborate on active industrial dashboards.
+                </p>
+                
+                <div className="space-y-4">
+                  <motion.a 
+                    whileHover={{ x: 8 }}
+                    href="mailto:nabeelahmad193221@gmail.com" 
+                    className={`flex items-center gap-4 p-5 rounded-2xl border transition-all group ${
+                      theme === 'dark' ? 'bg-slate-900/40 border-slate-850 hover:border-cyan-500/30' : 'bg-white border-slate-200 hover:border-indigo-500/30 shadow-md'
+                    }`}
+                  >
+                    <div className={`p-3 rounded-xl border transition-colors ${
+                      theme === 'dark' ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-100'
+                    }`}>
+                      <Mail className={`w-5 h-5 ${theme === 'dark' ? 'text-cyan-400' : 'text-indigo-600'}`} />
+                    </div>
+                    <div>
+                      <p className="text-xs font-mono text-slate-500 uppercase font-black">Email Coordinate</p>
+                      <p className={`font-semibold text-sm md:text-base ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                        nabeelahmad193221@gmail.com
+                      </p>
+                    </div>
+                  </motion.a>
+                  
+                  <motion.a 
+                    whileHover={{ x: 8 }}
+                    href="https://wa.me/923246278872" 
+                    target="_blank" 
+                    rel="noreferrer" 
+                    className={`flex items-center gap-4 p-5 rounded-2xl border transition-all group ${
+                      theme === 'dark' ? 'bg-slate-900/40 border-slate-850 hover:border-emerald-500/30' : 'bg-white border-slate-200 hover:border-emerald-500/30 shadow-md'
+                    }`}
+                  >
+                    <div className={`p-3 rounded-xl border transition-colors ${
+                      theme === 'dark' ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-100'
+                    }`}>
+                      <Zap className="w-5 h-5 text-emerald-500" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-mono text-slate-500 uppercase font-black">WhatsApp Line</p>
+                      <p className={`font-semibold text-sm md:text-base ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                        +92 324 6278872
+                      </p>
+                    </div>
+                  </motion.a>
+
+                  <motion.div 
+                    className={`flex items-center gap-4 p-5 rounded-2xl border ${
+                      theme === 'dark' ? 'bg-slate-900/20 border-slate-850' : 'bg-indigo-50/20 border-slate-200'
+                    }`}
+                  >
+                    <div className={`p-3 rounded-xl border ${
+                      theme === 'dark' ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-100'
+                    }`}>
+                      <Calendar className="w-5 h-5 text-indigo-500" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-mono text-slate-500 uppercase font-bold">Location Coordinate</p>
+                      <p className={`font-semibold text-sm ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                        Lahore, Punjab, Pakistan
+                      </p>
+                    </div>
+                  </motion.div>
+                </div>
+              </div>
+
+              {/* Right Custom Interactive AI assistant */}
+              <div className={`p-8 rounded-[3rem] border flex flex-col justify-between ${
+                theme === 'dark' ? 'glass-card border-slate-800/80 shadow-2xl' : 'bg-white border-slate-200 shadow-2xl shadow-slate-150'
+              }`}>
+                <div>
+                  <div className="flex items-center gap-3.5 mb-8 pb-4 border-b border-slate-100 dark:border-slate-850">
+                    <div className="p-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20">
+                      <Bot className="w-5 h-5 text-indigo-500 dark:text-indigo-400" />
+                    </div>
+                    <div>
+                      <h3 className={`text-base font-extrabold font-display ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                        Analytics Consultation Sync
+                      </h3>
+                      <span className="text-[10px] font-mono text-indigo-500 font-black">ONLINE COGNITIVE NODE</span>
+                    </div>
+                  </div>
+                  
+                  <div className="h-[280px] overflow-y-auto mb-6 space-y-4 pr-1 custom-scrollbar">
+                    {chatMessages.map((msg, i) => (
+                      <div key={i} className={`flex items-start gap-3.5 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                        {msg.role === 'ai' && (
+                          <div className="w-8 h-8 rounded-full overflow-hidden border border-indigo-500/35 shadow-[0_0_8px_rgba(99,102,241,0.25)] shrink-0 mt-0.5 group">
+                            <img src={profileImage} alt="N" className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
+                          </div>
+                        )}
+                        <div className={`max-w-[85%] p-4 rounded-2xl text-xs md:text-sm leading-relaxed ${
+                          msg.role === 'user' 
+                            ? 'bg-indigo-500 text-white rounded-br-none shadow-md shadow-indigo-500/20' 
+                            : theme === 'dark' 
+                              ? 'bg-slate-950 border border-slate-850 text-slate-300 rounded-bl-none' 
+                              : 'bg-slate-50 border border-slate-100 text-slate-700 rounded-bl-none shadow-sm'
+                        }`}>
+                          {msg.text}
+                        </div>
+                      </div>
+                    ))}
+                    {isTyping && (
+                      <div className="flex justify-start">
+                        <div className={`p-4 rounded-2xl flex gap-1.5 ${
+                          theme === 'dark' ? 'bg-slate-950 border border-slate-850' : 'bg-slate-50 border border-slate-100'
+                        }`}>
+                          <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" />
+                          <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce [animation-delay:0.18s]" />
+                          <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce [animation-delay:0.36s]" />
+                        </div>
+                      </div>
+                    )}
+                    <div ref={chatEndRef} />
+                  </div>
+                </div>
+
+                <div className="flex gap-2.5">
                   <input 
                     type="text" 
                     value={userInput}
                     onChange={(e) => setUserInput(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                    placeholder="Ask me anything..."
-                    className="w-full bg-slate-950 border border-slate-700 rounded-2xl py-3 pl-4 pr-12 text-sm text-white focus:border-indigo-500/50 outline-none transition-all"
+                    placeholder="Ask me how Nabeel optimized throughput..."
+                    className={`flex-1 px-5 py-3.5 rounded-xl border text-xs md:text-sm outline-none transition-all ${
+                      theme === 'dark' 
+                        ? 'bg-slate-950 border-slate-850 text-white focus:border-indigo-500' 
+                        : 'bg-slate-50 border-slate-150 text-slate-900 focus:border-indigo-500'
+                    }`}
                   />
                   <button 
                     onClick={handleSendMessage}
-                    disabled={!userInput.trim() || isTyping}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-indigo-500 text-slate-950 rounded-xl hover:bg-indigo-400 disabled:opacity-50 disabled:hover:bg-indigo-500 transition-all"
+                    className="p-3.5 rounded-xl bg-indigo-500 text-white hover:bg-indigo-450 transition-colors cursor-pointer shrink-0"
                   >
                     <Send className="w-4 h-4" />
                   </button>
                 </div>
               </div>
-            </motion.div>
+            </div>
+          </motion.section>
+        </main>
+
+        {/* Dynamic Static Footer */}
+        <footer className={`relative z-10 py-12 border-t ${
+          theme === 'dark' ? 'bg-slate-950 border-slate-850' : 'bg-white border-slate-205'
+        }`}>
+          <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-cyan-400 p-0.5 flex items-center justify-center shadow-md overflow-hidden shrink-0 transition-transform duration-300 hover:scale-105">
+                <div className="w-full h-full rounded-full overflow-hidden bg-slate-950">
+                  <img src={profileImage} alt="N" className="w-full h-full object-cover" />
+                </div>
+              </div>
+              <div className="flex flex-col">
+                <span className={`font-bold tracking-tight text-xs font-display ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                  NABEEL AHMAD
+                </span>
+                <span className="text-[9px] font-mono text-slate-500 uppercase tracking-widest">
+                  Industrial Intelligence 2026
+                </span>
+              </div>
+            </div>
+            
+            <p className={`text-xs font-mono ${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`}>
+              © {new Date().getFullYear()} Nabeel Ahmad. Powered by accurate data. All rights reserved.
+            </p>
+            
+            <div className="flex gap-4">
+              <a href="https://github.com/nabeelahmad193221" target="_blank" rel="noreferrer" className={`hover:text-indigo-500 transition-colors ${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`}><Github className="w-5 h-5" /></a>
+              <a href="https://www.linkedin.com/in/nabeel-ahmad-a92a48399" target="_blank" rel="noreferrer" className={`hover:text-indigo-500 transition-colors ${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`}><Briefcase className="w-5 h-5" /></a>
+              <a href="mailto:nabeelahmad193221@gmail.com" className={`hover:text-indigo-500 transition-colors ${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`}><Mail className="w-5 h-5" /></a>
+            </div>
+          </div>
+        </footer>
+
+        {/* Hover Scroll-to-Top Button */}
+        <AnimatePresence>
+          {showScrollTop && (
+            <motion.button
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.5 }}
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="fixed bottom-6 right-6 z-40 p-4 rounded-2xl bg-indigo-500 text-white shadow-2xl hover:bg-indigo-400 transition-colors cursor-pointer"
+            >
+              <ChevronLeft className="w-6 h-6 rotate-90" />
+            </motion.button>
           )}
         </AnimatePresence>
-
-        <button
-          onClick={() => setIsChatOpen(!isChatOpen)}
-          className="w-14 h-14 rounded-full bg-gradient-to-tr from-indigo-500 to-violet-600 text-white shadow-2xl shadow-indigo-500/40 flex items-center justify-center hover:scale-110 active:scale-95 transition-all group relative"
-        >
-          {isChatOpen ? <X className="w-6 h-6" /> : <MessageSquare className="w-6 h-6" />}
-          {!isChatOpen && (
-            <span className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-slate-950 rounded-full" />
-          )}
-        </button>
       </div>
-    </div>
+    </>
   );
 }
