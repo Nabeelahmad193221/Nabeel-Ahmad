@@ -57,7 +57,7 @@ export default function DashboardLoader({ onComplete }: DashboardLoaderProps) {
       <div className="relative max-w-md w-full px-8 text-center space-y-8 z-10">
         {/* Animated Central Node */}
         <div className="flex justify-center">
-          <div className="relative w-24 h-24">
+          <div className="relative w-16 h-16">
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
@@ -66,12 +66,77 @@ export default function DashboardLoader({ onComplete }: DashboardLoaderProps) {
             <motion.div
               animate={{ rotate: -360 }}
               transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
-              className="absolute inset-2 rounded-full border-2 border-cyan-500/20 border-b-cyan-500"
+              className="absolute inset-1.5 rounded-full border-2 border-cyan-500/20 border-b-cyan-500"
             />
-            <div className="absolute inset-4 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center shadow-lg shadow-indigo-500/25">
-              <Database className="w-8 h-8 text-indigo-400 animate-pulse" />
+            <div className="absolute inset-3 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center shadow-lg shadow-indigo-500/25">
+              <Database className="w-5 h-5 text-indigo-400 animate-pulse" />
             </div>
           </div>
+        </div>
+
+        {/* NABEEL Name Loading */}
+        <div className="flex flex-col items-center justify-center gap-2">
+          <div className="flex items-center justify-center gap-1.5">
+            {['N', 'A', 'B', 'E', 'E', 'L'].map((char, index) => {
+              const letterThreshold = (index / 6) * 100;
+              const isLoaded = progress >= letterThreshold;
+              const isCurrent = progress >= letterThreshold && progress < ((index + 1) / 6) * 100;
+              
+              return (
+                <motion.div
+                  key={index}
+                  className="relative flex items-center justify-center w-11 h-13 md:w-12 md:h-14"
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.08, duration: 0.5 }}
+                >
+                  {/* Glowing background behind current/loaded letter */}
+                  <AnimatePresence>
+                    {isLoaded && (
+                      <motion.span
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: isCurrent ? 0.6 : 0.2, scale: isCurrent ? 1.25 : 1 }}
+                        exit={{ opacity: 0 }}
+                        className="absolute inset-0 blur-md rounded-lg bg-gradient-to-r from-indigo-500 to-cyan-400"
+                      />
+                    )}
+                  </AnimatePresence>
+
+                  {/* Glass letter card */}
+                  <div className={`w-full h-full rounded-xl flex items-center justify-center border transition-all duration-300 font-display text-xl md:text-2xl font-black ${
+                    isCurrent 
+                      ? 'bg-slate-900 border-indigo-400 text-white shadow-[0_0_15px_rgba(99,102,241,0.6)] scale-110 z-10' 
+                      : isLoaded 
+                        ? 'bg-slate-900/60 border-indigo-500/30 text-indigo-300' 
+                        : 'bg-slate-950/40 border-slate-800/60 text-slate-700'
+                  }`}>
+                    <span className={isLoaded ? 'text-transparent bg-clip-text bg-gradient-to-br from-white via-indigo-200 to-cyan-300' : ''}>
+                      {char}
+                    </span>
+                  </div>
+
+                  {/* Tech indicator under active letter */}
+                  {isCurrent && (
+                    <motion.div 
+                      layoutId="activeIndicator"
+                      className="absolute -bottom-1 left-1/4 right-1/4 h-0.5 bg-cyan-400 rounded-full"
+                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    />
+                  )}
+                </motion.div>
+              );
+            })}
+          </div>
+          
+          {/* Status Subtitle */}
+          <motion.div
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="text-[9px] md:text-[10px] tracking-[0.25em] text-indigo-400/80 font-mono mt-1 font-semibold uppercase flex items-center gap-1.5"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+            Nabeel Core Engine Active
+          </motion.div>
         </div>
 
         {/* Console Text Box */}
