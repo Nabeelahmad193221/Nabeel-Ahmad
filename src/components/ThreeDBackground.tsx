@@ -47,26 +47,27 @@ function CameraParallaxController() {
 // 3D Floating Analytical Shapes with Glassmorphism / Metallic Glow Mat
 function FloatingAnalyticalShapes() {
   const isMobile = useWindowSize();
-  const count = isMobile ? 3 : 7; // Performance throttle
+  const count = isMobile ? 4 : 9; // Performance throttle
 
   const items = useMemo(() => {
     const geometries = [
+      <icosahedronGeometry args={[0.3, 0]} />,
       <octahedronGeometry args={[0.35, 0]} />,
-      <torusGeometry args={[0.25, 0.08, 12, 48]} />,
-      <boxGeometry args={[0.35, 0.35, 0.35]} />,
-      <coneGeometry args={[0.25, 0.5, 4]} />
+      <torusGeometry args={[0.28, 0.08, 16, 48]} />,
+      <boxGeometry args={[0.32, 0.32, 0.32]} />,
+      <coneGeometry args={[0.25, 0.5, 5]} />
     ];
     
     return [...Array(count)].map((_, i) => ({
       geom: geometries[i % geometries.length],
       pos: [
-        (Math.random() - 0.5) * 7,
-        (Math.random() - 0.5) * 3 + 1,
-        (Math.random() - 0.5) * 5
+        (Math.random() - 0.5) * 8.5,
+        (Math.random() - 0.5) * 4 + 1,
+        (Math.random() - 0.5) * 6
       ] as [number, number, number],
-      speed: Math.random() * 1.5 + 0.5,
-      rotSpeed: [Math.random() * 0.5, Math.random() * 0.5, Math.random() * 0.5] as [number, number, number],
-      color: i % 2 === 0 ? "#6366f1" : "#22d3ee"
+      speed: Math.random() * 1.8 + 0.6,
+      rotSpeed: [Math.random() * 0.6, Math.random() * 0.6, Math.random() * 0.6] as [number, number, number],
+      color: i % 3 === 0 ? "#6366f1" : i % 3 === 1 ? "#22d3ee" : "#a855f7"
     }));
   }, [count]);
 
@@ -77,20 +78,20 @@ function FloatingAnalyticalShapes() {
           key={idx} 
           position={item.pos} 
           speed={item.speed} 
-          rotationIntensity={1.5} 
-          floatIntensity={1.5}
+          rotationIntensity={1.8} 
+          floatIntensity={1.8}
         >
           <mesh>
             {item.geom}
             <MeshDistortMaterial
               color={item.color}
-              speed={1.5}
-              distort={0.25}
+              speed={1.8}
+              distort={0.3}
               radius={1}
               transparent
-              opacity={0.6}
-              roughness={0.1}
-              metalness={0.9}
+              opacity={0.65}
+              roughness={0.08}
+              metalness={0.92}
             />
           </mesh>
         </Float>
@@ -285,9 +286,10 @@ const ThreeDBackground = () => {
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
         style={{ background: 'transparent' }}
       >
-        <ambientLight intensity={1.6} />
-        <pointLight position={[8, 8, 8]} intensity={1.5} color="#6366f1" />
-        <pointLight position={[-8, -8, -8]} intensity={0.8} color="#22d3ee" />
+        <ambientLight intensity={1.8} />
+        <pointLight position={[8, 8, 8]} intensity={1.8} color="#6366f1" />
+        <pointLight position={[-8, -8, -8]} intensity={1.2} color="#22d3ee" />
+        <pointLight position={[0, -5, 5]} intensity={1.0} color="#c084fc" />
 
         <React.Suspense fallback={null}>
           <CentralHologram />

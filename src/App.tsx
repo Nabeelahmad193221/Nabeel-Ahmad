@@ -410,14 +410,21 @@ export default function App() {
 
         {/* Outer Background Interactive Grids & Node Arrays with Deep Parallax */}
         <div id="home" className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+          {/* Ambient Gradient Foundation */}
+          <div className={`absolute inset-0 transition-opacity duration-1000 ${
+            theme === 'dark' 
+              ? 'bg-gradient-to-b from-indigo-950/30 via-slate-950 to-slate-950' 
+              : 'bg-gradient-to-b from-indigo-50/60 via-slate-50 to-slate-50'
+          }`} />
+
           {/* Dynamic Parallax Background Slide Container */}
           <motion.div style={{ y: gridY }} className="absolute inset-x-0 -top-40 h-[220vh] pointer-events-none">
             <div className={`absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_100%)] ${
-              theme === 'dark' ? 'opacity-30' : 'opacity-[0.06]'
+              theme === 'dark' ? 'opacity-35' : 'opacity-[0.07]'
             }`} />
             
             {/* Animated node matrix */}
-            <svg className={`absolute inset-0 w-full h-full ${theme === 'dark' ? 'opacity-25' : 'opacity-[0.04]'}`}>
+            <svg className={`absolute inset-0 w-full h-full ${theme === 'dark' ? 'opacity-30' : 'opacity-[0.05]'}`}>
               <pattern id="nodes-mesh" x="0" patternUnits="userSpaceOnUse" width="120" height="120">
                 <circle cx="10" cy="10" r="1.5" fill="#6366f1" />
                 <line x1="10" y1="10" x2="110" y2="10" stroke="#6366f1" strokeWidth="0.5" strokeDasharray="4 4" />
@@ -431,25 +438,68 @@ export default function App() {
           <motion.div 
             style={{ y: orb1Y }}
             animate={{ 
-              scale: [1, 1.15, 1],
-              opacity: [0.18, 0.28, 0.18]
+              scale: [1, 1.2, 1],
+              opacity: [0.22, 0.35, 0.22]
             }}
             transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-            className={`absolute top-[18%] left-[8%] w-[380px] h-[380px] rounded-full blur-[130px] mix-blend-screen pointer-events-none ${
-              theme === 'dark' ? 'bg-indigo-600/40' : 'bg-indigo-200/30'
+            className={`absolute top-[12%] left-[6%] w-[450px] h-[450px] rounded-full blur-[140px] mix-blend-screen pointer-events-none ${
+              theme === 'dark' ? 'bg-indigo-600/40' : 'bg-indigo-300/30'
             }`} 
           />
           <motion.div 
             style={{ y: orb2Y }}
             animate={{ 
               scale: [1.15, 1, 1.15],
-              opacity: [0.12, 0.22, 0.12]
+              opacity: [0.15, 0.28, 0.15]
             }}
             transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
-            className={`absolute top-[55%] right-[8%] w-[480px] h-[480px] rounded-full blur-[150px] mix-blend-screen pointer-events-none ${
-              theme === 'dark' ? 'bg-cyan-600/40' : 'bg-cyan-200/30'
+            className={`absolute top-[50%] right-[6%] w-[520px] h-[520px] rounded-full blur-[160px] mix-blend-screen pointer-events-none ${
+              theme === 'dark' ? 'bg-cyan-600/40' : 'bg-cyan-300/30'
             }`} 
           />
+          <motion.div 
+            animate={{ 
+              scale: [1, 1.25, 1],
+              opacity: [0.12, 0.25, 0.12],
+              x: [-20, 20, -20]
+            }}
+            transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+            className={`absolute top-[30%] right-[25%] w-[400px] h-[400px] rounded-full blur-[150px] mix-blend-screen pointer-events-none ${
+              theme === 'dark' ? 'bg-purple-600/35' : 'bg-purple-200/30'
+            }`} 
+          />
+
+          {/* Floating Stardust Light Particles */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            {[...Array(12)].map((_, i) => (
+              <motion.div
+                key={i}
+                initial={{
+                  x: `${(i * 8.5) % 100}vw`,
+                  y: `${(i * 12) % 100}vh`,
+                  opacity: 0.2
+                }}
+                animate={{
+                  y: [`${(i * 12) % 100}vh`, `${((i * 12) + 30) % 100}vh`, `${(i * 12) % 100}vh`],
+                  x: [`${(i * 8.5) % 100}vw`, `${((i * 8.5) + 5) % 100}vw`, `${(i * 8.5) % 100}vw`],
+                  opacity: [0.1, 0.45, 0.1],
+                  scale: [0.8, 1.4, 0.8]
+                }}
+                transition={{
+                  duration: 10 + (i % 5) * 3,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+                className={`absolute w-1.5 h-1.5 rounded-full ${
+                  i % 3 === 0 
+                    ? 'bg-indigo-400 shadow-[0_0_8px_#818cf8]' 
+                    : i % 3 === 1 
+                      ? 'bg-cyan-400 shadow-[0_0_8px_#22d3ee]' 
+                      : 'bg-purple-400 shadow-[0_0_8px_#c084fc]'
+                }`}
+              />
+            ))}
+          </div>
         </div>
 
         {/* Hero Landing Core */}

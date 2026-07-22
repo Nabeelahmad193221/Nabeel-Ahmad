@@ -2,12 +2,14 @@ import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  AreaChart, Area, ReferenceLine
+  AreaChart, Area, ReferenceLine, LineChart, Line
 } from 'recharts';
 import { 
   TrendingUp, Play, Pause, AlertTriangle, CheckCircle, RefreshCcw, 
   Workflow, Cpu, Sparkles, Filter, ChevronRight
 } from 'lucide-react';
+
+import dashboardImg from '../assets/images/manufacturing_kpi_dashboard_1784573540023.jpg';
 
 interface InteractiveDashboardProps {
   theme: 'dark' | 'light';
@@ -41,7 +43,7 @@ const avgEfficiency = +(uphData.reduce((acc, curr) => acc + curr.efficiency, 0) 
 const avgDefectRate = +(uphData.reduce((acc, curr) => acc + curr.defectRate, 0) / uphData.length).toFixed(2);
 
 export default function InteractiveDashboard({ theme }: InteractiveDashboardProps) {
-  const [activeTab, setActiveTab] = useState<'throughput' | 'breakdowns'>('throughput');
+  const [activeTab, setActiveTab] = useState<'throughput' | 'breakdowns' | 'quality'>('throughput');
   const [selectedHour, setSelectedHour] = useState<string | null>(null);
   const [simulatedLive, setSimulatedLive] = useState(true);
   const [highlightAnomaly, setHighlightAnomaly] = useState(false);
@@ -169,11 +171,11 @@ export default function InteractiveDashboard({ theme }: InteractiveDashboardProp
         
         {/* Main interactive chart section */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80 pb-4">
-            <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 dark:border-slate-800/80 pb-4 gap-4">
+            <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setActiveTab('throughput')}
-                className={`px-5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   activeTab === 'throughput'
                     ? 'bg-indigo-500 text-white shadow-xl shadow-indigo-500/25'
                     : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900'
@@ -183,24 +185,34 @@ export default function InteractiveDashboard({ theme }: InteractiveDashboardProp
               </button>
               <button
                 onClick={() => setActiveTab('breakdowns')}
-                className={`px-5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   activeTab === 'breakdowns'
                     ? 'bg-indigo-500 text-white shadow-xl shadow-indigo-500/25'
                     : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900'
                 }`}
               >
-                Breakdown Distribution (downtime)
+                Breakdown Distribution
+              </button>
+              <button
+                onClick={() => setActiveTab('quality')}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  activeTab === 'quality'
+                    ? 'bg-indigo-500 text-white shadow-xl shadow-indigo-500/25'
+                    : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900'
+                }`}
+              >
+                Quality & Efficiency Correlator
               </button>
             </div>
             
-            <div className="text-xs font-mono text-slate-400 hidden sm:block">
-              {activeTab === 'throughput' ? 'Hourly Telemetry' : 'Machine Downtime Vectors'}
+            <div className="text-xs font-mono text-slate-400 hidden lg:block">
+              {activeTab === 'throughput' ? 'Hourly Telemetry' : activeTab === 'breakdowns' ? 'Machine Downtime Vectors' : 'Quality Defect & Efficiency'}
             </div>
           </div>
 
           <div className="h-[300px] w-full min-h-[300px] relative">
             <AnimatePresence mode="wait">
-              {activeTab === 'throughput' ? (
+              {activeTab === 'throughput' && (
                 <motion.div
                   key="throughput"
                   initial={{ opacity: 0, y: 15 }}
@@ -233,7 +245,9 @@ export default function InteractiveDashboard({ theme }: InteractiveDashboardProp
                     </AreaChart>
                   </ResponsiveContainer>
                 </motion.div>
-              ) : (
+              )}
+
+              {activeTab === 'breakdowns' && (
                 <motion.div
                   key="breakdowns"
                   initial={{ opacity: 0, y: 15 }}
@@ -260,12 +274,76 @@ export default function InteractiveDashboard({ theme }: InteractiveDashboardProp
                   </ResponsiveContainer>
                 </motion.div>
               )}
+
+              {activeTab === 'quality' && (
+                <motion.div
+                  key="quality"
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                  transition={{ duration: 0.4 }}
+                  className="w-full h-full"
+                >
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={uphData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={theme === 'dark' ? '#1e293b' : '#f1f5f9'} />
+                      <XAxis dataKey="hour" stroke={theme === 'dark' ? '#64748b' : '#94a3b8'} style={{ fontSize: '11px', fontFamily: 'monospace' }} />
+                      <YAxis yAxisId="left" stroke="#6366f1" style={{ fontSize: '11px', fontFamily: 'monospace' }} domain={[85, 110]} label={{ value: 'Efficiency (%)', angle: -90, position: 'insideLeft', style: { fill: '#6366f1', fontSize: '11px' } }} />
+                      <YAxis yAxisId="right" orientation="right" stroke="#f43f5e" style={{ fontSize: '11px', fontFamily: 'monospace' }} domain={[0, 0.25]} label={{ value: 'Defect Rate (%)', angle: 90, position: 'insideRight', style: { fill: '#f43f5e', fontSize: '11px' } }} />
+                      <Tooltip {...tooltipStyle} />
+                      <Legend style={{ fontSize: '12px' }} />
+                      
+                      {highlightAnomaly && (
+                        <ReferenceLine x="11:00" stroke="#f43f5e" strokeWidth={2} label={{ value: 'Defect Spike (0.18%)', fill: '#f43f5e', position: 'top', fontSize: '11px', fontFamily: 'monospace' }} />
+                      )}
+                      
+                      <Line yAxisId="left" type="monotone" dataKey="efficiency" name="Line Efficiency (%)" stroke="#6366f1" strokeWidth={3} activeDot={{ r: 8 }} dot={{ r: 4 }} />
+                      <Line yAxisId="right" type="monotone" dataKey="defectRate" name="Defect Rate (%)" stroke="#f43f5e" strokeWidth={3} activeDot={{ r: 8 }} dot={{ r: 4 }} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </motion.div>
+              )}
             </AnimatePresence>
           </div>
         </div>
 
         {/* Live diagnostics insights board */}
         <div className="space-y-6">
+          {/* Live Dashboard Photo / Telemetry Monitor Panel */}
+          <div className={`p-4 rounded-3xl border overflow-hidden transition-all duration-300 relative group ${
+            theme === 'dark' ? 'bg-slate-900/40 border-slate-800/80' : 'bg-slate-50 border-slate-100 shadow-md shadow-slate-100/50'
+          }`}>
+            <div className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden mb-3.5 border border-indigo-500/15">
+              <img 
+                src={dashboardImg} 
+                alt="Manufacturing KPI Dashboard Live Camera Feed" 
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                referrerPolicy="no-referrer"
+              />
+              {/* Pulsing REC indicator */}
+              <div className="absolute top-2.5 left-2.5 bg-rose-500/80 backdrop-blur-md px-2 py-0.5 rounded-full text-[9px] font-bold text-white tracking-widest uppercase flex items-center gap-1.5 shadow-md">
+                <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
+                Live Feed
+              </div>
+              <div className="absolute bottom-2.5 right-2.5 bg-slate-950/80 backdrop-blur-md px-2.5 py-0.5 rounded-md text-[8px] font-mono text-cyan-400 border border-cyan-500/30">
+                LINE_01_CAM
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <div>
+                <h5 className={`text-xs font-extrabold font-display ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                  KPI Telemetry Projection Map
+                </h5>
+                <p className="text-[10px] text-slate-400 font-mono mt-0.5">
+                  Predictive automation active
+                </p>
+              </div>
+              <span className="text-[9px] font-mono text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded-md font-semibold">
+                1080P HD
+              </span>
+            </div>
+          </div>
+
           <div className="flex items-center gap-2 border-b border-slate-100 dark:border-slate-800/80 pb-4">
             <Cpu className="w-5 h-5 text-indigo-400" />
             <h4 className={`font-bold text-lg font-display ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
