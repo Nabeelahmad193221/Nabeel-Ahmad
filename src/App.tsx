@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
 import { GoogleGenAI } from "@google/genai";
 import ThreeDBackground from "./components/ThreeDBackground";
+import manufacturingDashboardImg from "./assets/images/manufacturing_dashboard_preview_1786764347740.jpg";
+import machineBreakdownImg from "./assets/images/machine_breakdown_preview_1786764362808.jpg";
 
 // Import custom redesigned modular components
 import DashboardLoader from "./components/DashboardLoader";
@@ -78,7 +80,7 @@ const projects = [
     steps: ["Data extraction from SAP ERP", "Data cleaning using Python (Pandas)", "Dashboard design in Power BI", "Implementation of automated refresh cycles"],
     tools: ["Power BI", "Python", "SAP ERP", "SQL"],
     outcome: "Reduced reporting time by 80% and improved production throughput by 12% through real-time bottleneck identification.",
-    image: "https://images.unsplash.com/photo-1551288049-bbbda536639a?auto=format&fit=crop&q=80&w=800",
+    image: manufacturingDashboardImg,
     impact: "80% Time Saving"
   },
   { 
@@ -89,7 +91,7 @@ const projects = [
     steps: ["Historical downtime data collection", "Root cause analysis (RCA)", "Predictive maintenance scheduling", "Visualization of breakdown frequency and MTBF"],
     tools: ["Python", "Pandas", "Matplotlib", "Excel"],
     outcome: "Identified top 3 critical machines responsible for 60% of downtime, leading to a 15% reduction in unscheduled maintenance.",
-    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=800",
+    image: machineBreakdownImg,
     impact: "15% Less Downtime"
   }
 ];
@@ -310,9 +312,9 @@ export default function App() {
               className="flex items-center gap-3 cursor-pointer animate-fade-in"
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             >
-              <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-cyan-400 p-0.5 flex items-center justify-center shadow-lg shadow-indigo-500/20 overflow-hidden shrink-0 group transition-all duration-300 hover:scale-105 active:scale-95">
-                <div className="w-full h-full rounded-full overflow-hidden bg-slate-950 flex items-center justify-center">
-                  <span className="text-white text-xs font-bold font-mono">NA</span>
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-cyan-400 p-0.5 flex items-center justify-center shadow-lg shadow-indigo-500/20 shrink-0 group transition-all duration-300 hover:scale-105 active:scale-95">
+                <div className="w-full h-full rounded-[10px] bg-slate-950 flex items-center justify-center">
+                  <Terminal className="w-5 h-5 text-cyan-400" />
                 </div>
               </div>
               <div className="flex flex-col">
@@ -531,28 +533,23 @@ export default function App() {
                 ))}
               </motion.div>
 
-              {/* Absolute Centered static profile photo replacement with high-tech logo & hover animations */}
+              {/* Absolute Centered static analytics node badge without photo or frame */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <motion.div
-                  animate={{ scale: [1, 1.04, 1] }}
+                  animate={{ scale: [1, 1.05, 1] }}
                   transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-                  whileHover={{ scale: 1.12 }}
-                  className="w-32 h-32 md:w-36 md:h-36 rounded-full overflow-hidden border-2 border-indigo-500/80 bg-slate-950 flex flex-col items-center justify-center shadow-[0_0_40px_rgba(99,102,241,0.45)] cursor-pointer relative z-20 group"
+                  whileHover={{ scale: 1.1 }}
+                  className="px-6 py-4 rounded-2xl bg-slate-950/90 backdrop-blur-xl border border-indigo-500/30 shadow-[0_0_50px_rgba(99,102,241,0.35)] cursor-pointer relative z-20 group flex flex-col items-center justify-center text-center"
                 >
-                  {/* Digital Grid Pattern Background */}
-                  <div className="absolute inset-0 opacity-20 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:10px_10px]" />
-                  <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/20 via-transparent to-cyan-500/20" />
-                  
-                  {/* Techy glowing initials */}
-                  <div className="relative flex flex-col items-center justify-center z-10 select-none">
-                    <span className="text-4xl md:text-5xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-tr from-indigo-400 via-cyan-300 to-white font-display drop-shadow-[0_0_15px_rgba(99,102,241,0.6)]">
-                      NA
+                  <div className="flex items-center gap-2 mb-1">
+                    <Sparkles className="w-5 h-5 text-cyan-400 animate-pulse" />
+                    <span className="text-xl font-black font-display tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-cyan-300 to-white">
+                      NABEEL.ANALYTICS
                     </span>
-                    <Terminal className="w-4 h-4 text-cyan-400/80 mt-1 animate-pulse" />
                   </div>
-                  
-                  {/* Subtle technical overlay scan lines/reflection */}
-                  <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/10 via-transparent to-white/10 pointer-events-none" />
+                  <span className="text-[10px] font-mono text-indigo-400 font-bold tracking-widest uppercase">
+                    DATA ARCHITECT • BI SPECIALIST
+                  </span>
                 </motion.div>
               </div>
             </div>
@@ -680,15 +677,8 @@ export default function App() {
                     theme === 'dark' ? 'bg-indigo-500' : 'bg-indigo-300'
                   }`} />
                   
-                  <div className="relative w-44 h-44 md:w-48 md:h-48 rounded-full p-1 bg-gradient-to-tr from-indigo-500 via-cyan-400 to-indigo-600 shadow-[0_0_25px_rgba(99,102,241,0.25)] group-hover:shadow-[0_0_40px_rgba(99,102,241,0.45)] transition-all duration-500 mb-6 shrink-0 flex items-center justify-center">
-                    <div className="w-full h-full rounded-full overflow-hidden bg-slate-950 flex flex-col items-center justify-center relative">
-                      {/* Grid overlay */}
-                      <div className="absolute inset-0 opacity-10 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:8px_8px]" />
-                      <User className="w-16 h-16 text-indigo-400/80 mb-1 group-hover:scale-110 transition-transform duration-300" />
-                      <span className="text-2xl font-black font-display text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 to-cyan-200">
-                        NA
-                      </span>
-                    </div>
+                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-indigo-500/20 via-cyan-500/20 to-indigo-600/20 border border-indigo-500/30 flex items-center justify-center mb-6 shrink-0 shadow-lg shadow-indigo-500/10 group-hover:scale-105 transition-transform duration-300">
+                    <Terminal className="w-10 h-10 text-indigo-400" />
                   </div>
                   <div>
                     <h3 className={`text-2xl font-extrabold font-display tracking-tight ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
@@ -1304,8 +1294,8 @@ export default function App() {
                     {chatMessages.map((msg, i) => (
                       <div key={i} className={`flex items-start gap-3.5 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                         {msg.role === 'ai' && (
-                          <div className="w-8 h-8 rounded-full overflow-hidden border border-indigo-500/35 shadow-[0_0_8px_rgba(99,102,241,0.25)] shrink-0 mt-0.5 group bg-slate-950 flex items-center justify-center">
-                            <Bot className="w-4 h-4 text-indigo-400 transition-transform duration-300 group-hover:scale-110" />
+                          <div className="w-8 h-8 rounded-xl border border-indigo-500/35 shadow-[0_0_8px_rgba(99,102,241,0.25)] shrink-0 mt-0.5 group bg-slate-950 flex items-center justify-center">
+                            <Bot className="w-4 h-4 text-indigo-400" />
                           </div>
                         )}
                         <div className={`max-w-[85%] p-4 rounded-2xl text-xs md:text-sm leading-relaxed ${
@@ -1365,10 +1355,8 @@ export default function App() {
         }`}>
           <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-cyan-400 p-0.5 flex items-center justify-center shadow-md overflow-hidden shrink-0 transition-transform duration-300 hover:scale-105">
-                <div className="w-full h-full rounded-full overflow-hidden bg-slate-950 flex items-center justify-center">
-                  <span className="text-white text-[10px] font-bold font-mono">NA</span>
-                </div>
+              <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 font-bold font-mono text-xs shrink-0">
+                NA
               </div>
               <div className="flex flex-col">
                 <span className={`font-bold tracking-tight text-xs font-display ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
