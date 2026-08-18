@@ -4,6 +4,13 @@ import { GoogleGenAI } from "@google/genai";
 import ThreeDBackground from "./components/ThreeDBackground";
 import manufacturingDashboardImg from "./assets/images/manufacturing_dashboard_preview_1786764347740.jpg";
 import machineBreakdownImg from "./assets/images/machine_breakdown_preview_1786764362808.jpg";
+import prodPerfDashImg from "./assets/images/prod_perf_dash_1787036734325.jpg";
+import matMgmtAnalysisImg from "./assets/images/mat_mgmt_analysis_1787036754283.jpg";
+import machTimeAnalysisImg from "./assets/images/mach_time_analysis_1787036773347.jpg";
+import matRejectAnalysisImg from "./assets/images/mat_reject_analysis_1787036794202.jpg";
+import deliveryDashImg from "./assets/images/delivery_dash_1787036816897.jpg";
+import lossTimeAnalysisImg from "./assets/images/loss_time_analysis_1787036838766.jpg";
+import prodPlanDashImg from "./assets/images/prod_plan_dash_1787036863243.jpg";
 
 // Import custom redesigned modular components
 import DashboardLoader from "./components/DashboardLoader";
@@ -73,26 +80,74 @@ const certificates = [
 
 const projects = [
   { 
-    name: "Manufacturing KPI Dashboard", 
-    url: "https://github.com/nabeelahmad193221/manufacturing-kpi",
-    overview: "A comprehensive dashboard for real-time monitoring of manufacturing performance dynamically.",
-    problem: "Production managers lacked visibility into real-time UPH (Units Per Hour) and line efficiency, leading to delayed decision-making.",
-    steps: ["Data extraction from SAP ERP", "Data cleaning using Python (Pandas)", "Dashboard design in Power BI", "Implementation of automated refresh cycles"],
+    name: "Production Performance Dashboard", 
+    overview: "Built interactive Power BI dashboard to monitor production KPIs, efficiency, and output trends.",
+    problem: "Production managers lacked real-time visibility into line efficiency, scrap rates, and unit output trends across active factory shifts.",
+    steps: ["Data extraction from SAP ERP & SQL sources", "Data cleaning and transformation using Python (Pandas)", "Interactive multi-page dashboard modeling in Power BI", "Implementation of automated refresh cycles and KPI alerts"],
     tools: ["Power BI", "Python", "SAP ERP", "SQL"],
-    outcome: "Reduced reporting time by 80% and improved production throughput by 12% through real-time bottleneck identification.",
-    image: manufacturingDashboardImg,
-    impact: "80% Time Saving"
+    outcome: "Empowered operations leadership with real-time OEE and yield metrics, reducing reporting latency by 80% and increasing throughput by 14%.",
+    image: prodPerfDashImg,
+    impact: "14% Output Boost"
   },
   { 
-    name: "Machine Breakdown Analysis", 
-    url: "https://github.com/nabeelahmad193221/machine-breakdown-analysis",
-    overview: "In-depth analysis of machine downtime to identify root causes and preventive maintenance patterns.",
-    problem: "Frequent unscheduled machine breakdowns were causing significant production losses and high maintenance costs.",
-    steps: ["Historical downtime data collection", "Root cause analysis (RCA)", "Predictive maintenance scheduling", "Visualization of breakdown frequency and MTBF"],
-    tools: ["Python", "Pandas", "Matplotlib", "Excel"],
-    outcome: "Identified top 3 critical machines responsible for 60% of downtime, leading to a 15% reduction in unscheduled maintenance.",
-    image: machineBreakdownImg,
-    impact: "15% Less Downtime"
+    name: "Material Management Analysis", 
+    overview: "Analyzed inventory movement, stock levels, and material utilization using SAP ERP & Excel.",
+    problem: "Frequent stockouts and elevated holding costs due to manual inventory spreadsheets and unstandardized material consumption rates.",
+    steps: ["SAP MM module inventory records extraction", "ABC & FSN stock classification in Excel & SQL", "Safety stock threshold optimization", "Material consumption variance tracking reports"],
+    tools: ["SAP ERP", "Excel", "SQL", "Python"],
+    outcome: "Optimized inventory turnover cycles, eliminated critical production line stockouts, and reduced material carrying costs by 22%.",
+    image: matMgmtAnalysisImg,
+    impact: "22% Cost Reduction"
+  },
+  { 
+    name: "Machine Working Time Analysis", 
+    overview: "Evaluated machine utilization and downtime to improve productivity.",
+    problem: "Unscheduled machine idling and uneven equipment workload distribution caused severe bottleneck delays across work centers.",
+    steps: ["PLC run-time & downtime logs ingestion", "Operational vs Idle time categorization in Python", "Equipment utilization heatmaps and MTBF tracking", "Predictive maintenance scheduling workflow"],
+    tools: ["Python", "Power BI", "Excel", "SQL"],
+    outcome: "Identified top 3 critical machines responsible for 60% of idle time, raising overall equipment utilization from 68% to 84%.",
+    image: machTimeAnalysisImg,
+    impact: "16% Utilization Boost"
+  },
+  { 
+    name: "Material Rejection Analysis", 
+    overview: "Created reports to monitor rejection trends and support quality improvement initiatives.",
+    problem: "High material scrap rates and lack of root-cause traceability for defective batches resulted in avoidable material waste.",
+    steps: ["Quality inspection and scrap log aggregation", "Pareto 80/20 defect classification analysis", "Vendor vs in-house defect correlation reports", "Dynamic visual quality dashboard creation in Power BI"],
+    tools: ["Power BI", "Excel", "Python", "SQL"],
+    outcome: "Pinpointed critical defect drivers and vendor batch variances, cutting overall material scrap and rejection rates by 35%.",
+    image: matRejectAnalysisImg,
+    impact: "35% Scrap Reduction"
+  },
+  { 
+    name: "Delivery Management Dashboard", 
+    overview: "Developed dashboard to track delivery performance, on-time delivery, and logistics KPIs.",
+    problem: "Logistics dispatch delays and uncoordinated transit timelines led to missed customer delivery windows and SLA penalties.",
+    steps: ["Outbound dispatch & transit timestamp integration", "Carrier on-time performance benchmarking", "Interactive logistics scorecard & route tracking dashboard", "Automated delivery exception notification system"],
+    tools: ["Power BI", "SQL", "Excel", "SAP ERP"],
+    outcome: "Boosted On-Time In-Full (OTIF) delivery rate to 96.5% and reduced transit lead time variance across regional supply hubs.",
+    image: deliveryDashImg,
+    impact: "96.5% OTIF Rate"
+  },
+  { 
+    name: "Monthly Loss Time Analysis", 
+    overview: "Identified major causes of production downtime through analytical reports and recommendations.",
+    problem: "Accumulated micro-stoppages, line setup delays, and shift changeover gaps went unrecorded, eroding monthly production targets.",
+    steps: ["Shift-level time study & loss categorization", "Statistical downtime trend modeling using Python & SQL", "Monthly changeover variance analysis reports", "Actionable SOP recommendations for floor supervisors"],
+    tools: ["Python", "Excel", "SQL", "Power BI"],
+    outcome: "Cut monthly cumulative loss time by 45 hours and reduced shift handover turnaround time by 30%.",
+    image: lossTimeAnalysisImg,
+    impact: "45h Saved Monthly"
+  },
+  { 
+    name: "Production Planning Dashboard", 
+    overview: "Developed reporting solutions for production planning and performance monitoring.",
+    problem: "Manual scheduling and disconnected demand forecasts caused production order backlogs and unplanned worker overtime.",
+    steps: ["Planned vs actual output dataset unification", "Dynamic capacity requirement planning algorithm", "Visual Gantt and order pipeline progress dashboard", "Automated schedule adherence reporting in Power BI"],
+    tools: ["Power BI", "SAP ERP", "Excel", "Python"],
+    outcome: "Accelerated production planning cycles by 65% and achieved 98% planned vs actual schedule compliance.",
+    image: prodPlanDashImg,
+    impact: "98% Plan Adherence"
   }
 ];
 
@@ -154,7 +209,7 @@ export default function App() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoadingComplete, setIsLoadingComplete] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
-  const [projectFilter, setProjectFilter] = useState<'All' | 'Power BI' | 'Python' | 'SQL' | 'Excel'>('All');
+  const [projectFilter, setProjectFilter] = useState<'All' | 'Power BI' | 'Python' | 'SQL' | 'Excel' | 'SAP ERP'>('All');
   
   const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -171,7 +226,7 @@ export default function App() {
     await new Promise(resolve => setTimeout(resolve, 1500));
     
     // Fallback: Open mailto in new tab
-    const mailtoUrl = `mailto:nabeelahmad193221@gmail.com?subject=${encodeURIComponent(formState.subject || "Portfolio Inquiry")}&body=${encodeURIComponent(`Name: ${formState.name}\nEmail: ${formState.email}\n\n${formState.message}`)}`;
+    const mailtoUrl = `mailto:nabeelahmad240132572@gmail.com?subject=${encodeURIComponent(formState.subject || "Portfolio Inquiry")}&body=${encodeURIComponent(`Name: ${formState.name}\nEmail: ${formState.email}\n\n${formState.message}`)}`;
     window.location.href = mailtoUrl;
 
     setIsSubmitting(false);
@@ -238,9 +293,18 @@ export default function App() {
       const context = `
         You are Nabeel Ahmad's personal AI Assistant.
         About Nabeel Ahmad:
+        - Email Contact: nabeelahmad240132572@gmail.com
         - Role: Data Analyst at Haier Pakistan (Lahore, Pakistan). Joined March 2025.
         - Core expertise: Manufacturing Intelligence, line efficiency monitoring, UPH (Units Per Hour), and downtime RCA.
         - Tech Stack: Excel (Expert), Power BI, SAP ERP, Python (Advanced Pandas/NumPy), SQL Database Querying.
+        - Featured Projects:
+          1. Production Performance Dashboard (Power BI, Python, SAP ERP, SQL): Monitors production KPIs, efficiency, and output trends.
+          2. Material Management Analysis (SAP ERP, Excel, SQL, Python): Analyzes inventory movement, stock levels, and material utilization.
+          3. Machine Working Time Analysis (Python, Power BI, Excel, SQL): Evaluates machine utilization and downtime to improve productivity.
+          4. Material Rejection Analysis (Power BI, Excel, Python, SQL): Tracks rejection trends and supports quality improvement initiatives.
+          5. Delivery Management Dashboard (Power BI, SQL, Excel, SAP ERP): Tracks delivery performance, on-time delivery (OTIF), and logistics KPIs.
+          6. Monthly Loss Time Analysis (Python, Excel, SQL, Power BI): Identifies causes of production downtime through analytical reports.
+          7. Production Planning Dashboard (Power BI, SAP ERP, Excel, Python): Reporting solutions for production planning and performance monitoring.
         - High-impact Achievements: Developed SAP ERP synchronized analytics reports, identified root machine failures reducing downtime by 15%, automated refresh cycles decreasing manual reporting time by 80%.
         - Certifications: Microsoft Excel Dashboard, HR Analyst, Databricks SQL, SQL Data Analysis.
         - Communication tone: Concise, authoritative on analytics, supportive, and friendly. Never hallucinate fake facts.
@@ -930,14 +994,14 @@ export default function App() {
                 </div>
                 <div>
                   <h2 className={`text-3xl lg:text-4xl font-extrabold font-display ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
-                    Case Studies & Repositories
+                    Projects & Case Studies
                   </h2>
                 </div>
               </div>
 
               {/* Dynamic Filtering Panel */}
               <div className="flex flex-wrap items-center gap-2 bg-slate-100/80 dark:bg-slate-900/50 p-1 rounded-2xl border border-slate-200/40 dark:border-slate-800/40">
-                {(['All', 'Power BI', 'Python', 'SQL', 'Excel'] as const).map((filter) => (
+                {(['All', 'Power BI', 'Python', 'SQL', 'Excel', 'SAP ERP'] as const).map((filter) => (
                   <button
                     key={filter}
                     onClick={() => setProjectFilter(filter)}
@@ -1035,17 +1099,6 @@ export default function App() {
                                   {project.outcome}
                                 </p>
                               </div>
-                            </div>
-
-                            <div className="pt-4 flex gap-4 max-w-sm">
-                              <a 
-                                href={project.url} 
-                                target="_blank" 
-                                rel="noreferrer" 
-                                className="flex-1 inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-xl bg-slate-900 dark:bg-slate-800 text-white font-bold hover:bg-slate-800 dark:hover:bg-slate-700 transition-colors shadow-lg self-start text-sm"
-                              >
-                                <Github className="w-5 h-5" /> View Git Code
-                              </a>
                             </div>
                           </div>
                         </div>
@@ -1213,7 +1266,7 @@ export default function App() {
                 <div className="space-y-4">
                   <motion.a 
                     whileHover={{ x: 8 }}
-                    href="mailto:nabeelahmad193221@gmail.com" 
+                    href="mailto:nabeelahmad240132572@gmail.com" 
                     className={`flex items-center gap-4 p-5 rounded-2xl border transition-all group ${
                       theme === 'dark' ? 'bg-slate-900/40 border-slate-850 hover:border-cyan-500/30' : 'bg-white border-slate-200 hover:border-indigo-500/30 shadow-md'
                     }`}
@@ -1226,7 +1279,7 @@ export default function App() {
                     <div>
                       <p className="text-xs font-mono text-slate-500 uppercase font-black">Email Coordinate</p>
                       <p className={`font-semibold text-sm md:text-base ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
-                        nabeelahmad193221@gmail.com
+                        nabeelahmad240132572@gmail.com
                       </p>
                     </div>
                   </motion.a>
@@ -1375,7 +1428,7 @@ export default function App() {
             <div className="flex gap-4">
               <a href="https://github.com/nabeelahmad193221" target="_blank" rel="noreferrer" className={`hover:text-indigo-500 transition-colors ${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`}><Github className="w-5 h-5" /></a>
               <a href="https://www.linkedin.com/in/nabeel-ahmad-a92a48399" target="_blank" rel="noreferrer" className={`hover:text-indigo-500 transition-colors ${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`}><Briefcase className="w-5 h-5" /></a>
-              <a href="mailto:nabeelahmad193221@gmail.com" className={`hover:text-indigo-500 transition-colors ${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`}><Mail className="w-5 h-5" /></a>
+              <a href="mailto:nabeelahmad240132572@gmail.com" className={`hover:text-indigo-500 transition-colors ${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`}><Mail className="w-5 h-5" /></a>
             </div>
           </div>
         </footer>

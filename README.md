@@ -9,7 +9,7 @@
 <h2 align="center">🚀 Data Analyst | Manufacturing Intelligence | SAP ERP</h2>
 
 <p align="center">
-  <a href="mailto:nabeelahmad193221@gmail.com"><img src="https://img.shields.io/badge/Direct_Email-D14836?style=for-the-badge&logo=gmail&logoColor=white"/></a>
+  <a href="mailto:nabeelahmad240132572@gmail.com"><img src="https://img.shields.io/badge/Direct_Email-D14836?style=for-the-badge&logo=gmail&logoColor=white"/></a>
   <a href="https://nabeelahmad193221.github.io/Portfoliowebsite.pk/"><img src="https://img.shields.io/badge/Live_Portfolio-255E00?style=for-the-badge&logo=google-chrome&logoColor=white"/></a>
   <a href="https://www.linkedin.com/in/nabeel-ahmad-a92a48399"><img src="https://img.shields.io/badge/LinkedIn_Profile-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/></a>
   <a href="https://www.instagram.com/nabeelahmad2412?igsh=MWk1ZHJqd2E0eWRoYQ=="><img src="https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white"/></a>
